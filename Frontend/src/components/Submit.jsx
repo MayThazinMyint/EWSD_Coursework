@@ -1,13 +1,13 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
 
-function Submit({ styleBtn, text, disabled }) {
+function Submit({ text, disabled }) {
   return (
     <button
       type="submit"
       data-dismiss="modal"
       disabled={disabled}
-      className={`p2-bold-16 ${disabled ? "primary-btn-disabled" : styleBtn}`}
+      className="w-[25%] text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
     >
       <p>{text}</p>
     </button>
@@ -16,7 +16,6 @@ function Submit({ styleBtn, text, disabled }) {
 
 Submit.propTypes = {
   text: PropTypes.string.isRequired,
-  styleBtn: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
 };
 

@@ -5,7 +5,11 @@ function Label(props) {
   const { text, hint, required } = props;
   return (
     <label htmlFor={text}>
-      <p className={"mb-2 p2-bold-16 "}>
+      <p
+        className={
+          "block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        }
+      >
         {text} <span className="negative">{required}</span>
       </p>
       {hint && (
