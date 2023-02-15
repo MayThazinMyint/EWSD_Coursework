@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
+use Carbon\Carbon;
 
 
 class AuthController extends Controller
@@ -45,26 +46,26 @@ class AuthController extends Controller
     }
 
     public function register(Request $request){
-    
+
         $validator = validator($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'user_role_id' => 'required|string|email|max:255|unique:users',
+            'department_id' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',]);
-        
-            if($validator->fails()) {
-                // return as appropriate
-                return response()->json([
-                    'message' => 'Your email has been already registered',
-                    'errorCode' => 422,
-                ], 200);
-                }
 
         $credentials = $request->only('email', 'password');
-        
+
+        $dob = Carbon::createFromFormat('m/d/Y', $request->dob);
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'address' => $request->address,
+            'dob' => $dob,
+            'department_id' => $request->department_id,
+            'user_role_id' => $request->user_role_id,
             'password' => Hash::make($request->password),
         ]);
         $token = JWTAuth::attempt($credentials);
