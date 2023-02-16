@@ -14,6 +14,7 @@ Route::get('users', [dummyAPI::class, 'getUsers']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth.jwt'], function () {
-    Route::get('users', [UserController::class, 'index']);
+   
     Route::get('dummy', [dummyAPI::class, 'getUsers']);
 });
+ Route::get('users', [UserController::class, 'index']);

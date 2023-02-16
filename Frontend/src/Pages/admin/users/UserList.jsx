@@ -4,7 +4,7 @@ import { fetchUsers } from "../../../features/user/userSlice";
 import { Link } from "react-router-dom";
 
 const UserList = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.users);
   console.log("user", user);
   const dispatch = useDispatch();
   useEffect(() => {
