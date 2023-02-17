@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 const UserList = () => {
   const user = useSelector((state) => state.user.users);
-  console.log("user", user);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchUsers());
@@ -16,7 +15,7 @@ const UserList = () => {
   }
 
   if (user.error) {
-    return <p>There was an error: {user.error}</p>;
+    return <p>There is an error: {user.error}</p>;
   }
   return (
     <div className="flex flex-col p-[50px]">
