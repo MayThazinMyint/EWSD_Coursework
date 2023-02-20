@@ -19,13 +19,13 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('dummy', [dummyAPI::class, 'getUsers']);
     // Department
     //Department
-    Route::get('department_list', [DepartmentsController::class, 'index']);
-    Route::post('department_add', [DepartmentsController::class, 'store']);
+    Route::get('departments', [DepartmentsController::class, 'index']);
+    Route::post('department/add', [DepartmentsController::class, 'store']);
 
     // department update >> http://localhost:8000/api/department_update/{department_id_to_update}
     // request body >> {"department_code": "Testing2","department_description": "Testing2"}
-    Route::post('department_update/{id}', [DepartmentsController::class, 'update']);
+    Route::post('department/update/{id}', [DepartmentsController::class, 'update']);
 
     // department delete >> http://localhost:8000/api/department_delete/{department_id_to_delete}
-    Route::delete('department_delete/{id}', [DepartmentsController::class, 'destroy']);
+    Route::delete('department/delete/{id}', [DepartmentsController::class, 'destroy']);
     });

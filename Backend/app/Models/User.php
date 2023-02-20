@@ -19,16 +19,21 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'user_name',
         'email',
-        'phone',
+        'user_phone',
         'password',
-        'dob',
+        'user_code',
+        'user_dob',
+        'created_date',
+        'is_active',
+        'updated_date',
         'address',
         'department_id',
         'user_role_id',
     ];
 
+    public $timestamps = false;
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -40,6 +45,20 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    // public function getAuthPassword()
+    // {
+    //     return $this->user_password;
+    // }
+
+    // public function getPasswordAttribute() {
+    //     return $this->user_password;
+       
+    // } 
+     /**
      * The attributes that should be cast.
      *
      * @var array<string, string>

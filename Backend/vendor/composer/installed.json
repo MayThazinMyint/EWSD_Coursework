@@ -1972,17 +1972,17 @@
         },
         {
             "name": "laravel/passport",
-            "version": "v11.7.0",
-            "version_normalized": "11.7.0.0",
+            "version": "v11.8.0",
+            "version_normalized": "11.8.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "5b57dbc9fc5e350d70b5c612fd53c65dd0bbebb2"
+                "reference": "2008d86244297a9fa291faf63f59d0949bddf91e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/5b57dbc9fc5e350d70b5c612fd53c65dd0bbebb2",
-                "reference": "5b57dbc9fc5e350d70b5c612fd53c65dd0bbebb2",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/2008d86244297a9fa291faf63f59d0949bddf91e",
+                "reference": "2008d86244297a9fa291faf63f59d0949bddf91e",
                 "shasum": ""
             },
             "require": {
@@ -2009,7 +2009,7 @@
                 "orchestra/testbench": "^7.0|^8.0",
                 "phpunit/phpunit": "^9.3"
             },
-            "time": "2023-02-08T17:24:40+00:00",
+            "time": "2023-02-17T09:08:51+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -2782,17 +2782,17 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.12.2",
-            "version_normalized": "3.12.2.0",
+            "version": "3.12.3",
+            "version_normalized": "3.12.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "f6377c709d2275ed6feaf63e44be7a7162b0e77f"
+                "reference": "81e87e74dd5213795c7846d65089712d2dda90ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/f6377c709d2275ed6feaf63e44be7a7162b0e77f",
-                "reference": "f6377c709d2275ed6feaf63e44be7a7162b0e77f",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/81e87e74dd5213795c7846d65089712d2dda90ce",
+                "reference": "81e87e74dd5213795c7846d65089712d2dda90ce",
                 "shasum": ""
             },
             "require": {
@@ -2822,7 +2822,7 @@
                 "phpunit/phpunit": "^9.5.11",
                 "sabre/dav": "^4.3.1"
             },
-            "time": "2023-01-19T12:02:19+00:00",
+            "time": "2023-02-18T15:32:41+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2856,7 +2856,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.12.2"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.12.3"
             },
             "funding": [
                 {
@@ -4391,25 +4391,25 @@
         },
         {
             "name": "php-open-source-saver/jwt-auth",
-            "version": "2.0.0",
-            "version_normalized": "2.0.0.0",
+            "version": "2.1.0",
+            "version_normalized": "2.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-Open-Source-Saver/jwt-auth.git",
-                "reference": "3da2695543df82d5286504fd7272bbd3def58eb7"
+                "reference": "5b4e3eec31c8da03d58b64c4e28c469b334bec4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-Open-Source-Saver/jwt-auth/zipball/3da2695543df82d5286504fd7272bbd3def58eb7",
-                "reference": "3da2695543df82d5286504fd7272bbd3def58eb7",
+                "url": "https://api.github.com/repos/PHP-Open-Source-Saver/jwt-auth/zipball/5b4e3eec31c8da03d58b64c4e28c469b334bec4c",
+                "reference": "5b4e3eec31c8da03d58b64c4e28c469b334bec4c",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "illuminate/auth": "^6|^7|^8.67|^9",
-                "illuminate/contracts": "^6|^7|^8.67|^9",
-                "illuminate/http": "^6|^7|^8.67|^9",
-                "illuminate/support": "^6|^7|^8.67|^9",
+                "illuminate/auth": "^6|^7|^8.67|^9|^10",
+                "illuminate/contracts": "^6|^7|^8.67|^9|^10",
+                "illuminate/http": "^6|^7|^8.67|^9|^10",
+                "illuminate/support": "^6|^7|^8.67|^9|^10",
                 "lcobucci/jwt": "^4.0",
                 "namshi/jose": "^7.0",
                 "nesbot/carbon": "^1.0|^2.0",
@@ -4417,17 +4417,17 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3",
-                "illuminate/console": "^6|^7|^8.67|^9",
-                "illuminate/routing": "^6|^7|^8.67|^9",
+                "illuminate/console": "^6|^7|^8.67|^9|^10",
+                "illuminate/routing": "^6|^7|^8.67|^9|^10",
                 "mockery/mockery": "^1.4.4",
-                "orchestra/testbench": "^4.18|^5.8|^6.3|^7",
+                "orchestra/testbench": "^4.18|^5.8|^6.3|^7|^8",
                 "phpstan/phpstan": "^1",
-                "phpunit/phpunit": "^8.5|^9.4",
+                "phpunit/phpunit": "^8.5|^9.4|^10",
                 "rector/rector": "^0.12.4",
                 "vlucas/phpdotenv": "^5.2.0",
                 "yoast/phpunit-polyfills": "^1.0.2"
             },
-            "time": "2022-09-08T06:52:59+00:00",
+            "time": "2023-02-17T11:42:33+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {

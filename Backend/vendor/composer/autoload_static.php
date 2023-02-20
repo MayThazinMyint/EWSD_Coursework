@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
+class ComposerStaticInit685f2d89327392b2f891f96018f362da
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -377,8 +377,8 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -434,8 +434,8 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri/src',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces/src',
+            0 => __DIR__ . '/..' . '/league/uri-interfaces/src',
+            1 => __DIR__ . '/..' . '/league/uri/src',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -837,6 +837,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\Common\\EventSubscriber' => __DIR__ . '/..' . '/doctrine/event-manager/src/EventSubscriber.php',
         'Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/src/AbstractLexer.php',
         'Doctrine\\Common\\Lexer\\Token' => __DIR__ . '/..' . '/doctrine/lexer/src/Token.php',
+        'Doctrine\\DBAL\\ArrayParameterType' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameterType.php',
         'Doctrine\\DBAL\\ArrayParameters\\Exception' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameters/Exception.php',
         'Doctrine\\DBAL\\ArrayParameters\\Exception\\MissingNamedParameter' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameters/Exception/MissingNamedParameter.php',
         'Doctrine\\DBAL\\ArrayParameters\\Exception\\MissingPositionalParameter' => __DIR__ . '/..' . '/doctrine/dbal/src/ArrayParameters/Exception/MissingPositionalParameter.php',
@@ -921,6 +922,8 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Driver\\PDO\\Exception' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/Exception.php',
         'Doctrine\\DBAL\\Driver\\PDO\\MySQL\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/MySQL/Driver.php',
         'Doctrine\\DBAL\\Driver\\PDO\\OCI\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/OCI/Driver.php',
+        'Doctrine\\DBAL\\Driver\\PDO\\PDOException' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/PDOException.php',
+        'Doctrine\\DBAL\\Driver\\PDO\\ParameterTypeMap' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/ParameterTypeMap.php',
         'Doctrine\\DBAL\\Driver\\PDO\\PgSQL\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/PgSQL/Driver.php',
         'Doctrine\\DBAL\\Driver\\PDO\\Result' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/Result.php',
         'Doctrine\\DBAL\\Driver\\PDO\\SQLSrv\\Connection' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/SQLSrv/Connection.php',
@@ -928,6 +931,14 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Driver\\PDO\\SQLSrv\\Statement' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/SQLSrv/Statement.php',
         'Doctrine\\DBAL\\Driver\\PDO\\SQLite\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/SQLite/Driver.php',
         'Doctrine\\DBAL\\Driver\\PDO\\Statement' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PDO/Statement.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Connection' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Connection.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\ConvertParameters' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/ConvertParameters.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Driver.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Exception' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Exception.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Exception\\UnexpectedValue' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Exception/UnexpectedValue.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Exception\\UnknownParameter' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Exception/UnknownParameter.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Result' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Result.php',
+        'Doctrine\\DBAL\\Driver\\PgSQL\\Statement' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/PgSQL/Statement.php',
         'Doctrine\\DBAL\\Driver\\Result' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/Result.php',
         'Doctrine\\DBAL\\Driver\\SQLSrv\\Connection' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/SQLSrv/Connection.php',
         'Doctrine\\DBAL\\Driver\\SQLSrv\\Driver' => __DIR__ . '/..' . '/doctrine/dbal/src/Driver/SQLSrv/Driver.php',
@@ -976,6 +987,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Exception\\InvalidFieldNameException' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/InvalidFieldNameException.php',
         'Doctrine\\DBAL\\Exception\\InvalidLockMode' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/InvalidLockMode.php',
         'Doctrine\\DBAL\\Exception\\LockWaitTimeoutException' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/LockWaitTimeoutException.php',
+        'Doctrine\\DBAL\\Exception\\MalformedDsnException' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/MalformedDsnException.php',
         'Doctrine\\DBAL\\Exception\\NoKeyValue' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/NoKeyValue.php',
         'Doctrine\\DBAL\\Exception\\NonUniqueFieldNameException' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/NonUniqueFieldNameException.php',
         'Doctrine\\DBAL\\Exception\\NotNullConstraintViolationException' => __DIR__ . '/..' . '/doctrine/dbal/src/Exception/NotNullConstraintViolationException.php',
@@ -1064,6 +1076,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Schema\\Comparator' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Comparator.php',
         'Doctrine\\DBAL\\Schema\\Constraint' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Constraint.php',
         'Doctrine\\DBAL\\Schema\\DB2SchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/DB2SchemaManager.php',
+        'Doctrine\\DBAL\\Schema\\DefaultSchemaManagerFactory' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/DefaultSchemaManagerFactory.php',
         'Doctrine\\DBAL\\Schema\\Exception\\ColumnAlreadyExists' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Exception/ColumnAlreadyExists.php',
         'Doctrine\\DBAL\\Schema\\Exception\\ColumnDoesNotExist' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Exception/ColumnDoesNotExist.php',
         'Doctrine\\DBAL\\Schema\\Exception\\ForeignKeyDoesNotExist' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Exception/ForeignKeyDoesNotExist.php',
@@ -1082,6 +1095,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Schema\\ForeignKeyConstraint' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/ForeignKeyConstraint.php',
         'Doctrine\\DBAL\\Schema\\Identifier' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Identifier.php',
         'Doctrine\\DBAL\\Schema\\Index' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Index.php',
+        'Doctrine\\DBAL\\Schema\\LegacySchemaManagerFactory' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/LegacySchemaManagerFactory.php',
         'Doctrine\\DBAL\\Schema\\MySQLSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/MySQLSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\OracleSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/OracleSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\PostgreSQLSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/PostgreSQLSchemaManager.php',
@@ -1090,6 +1104,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Schema\\SchemaConfig' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/SchemaConfig.php',
         'Doctrine\\DBAL\\Schema\\SchemaDiff' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/SchemaDiff.php',
         'Doctrine\\DBAL\\Schema\\SchemaException' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/SchemaException.php',
+        'Doctrine\\DBAL\\Schema\\SchemaManagerFactory' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/SchemaManagerFactory.php',
         'Doctrine\\DBAL\\Schema\\Sequence' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Sequence.php',
         'Doctrine\\DBAL\\Schema\\SqliteSchemaManager' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/SqliteSchemaManager.php',
         'Doctrine\\DBAL\\Schema\\Table' => __DIR__ . '/..' . '/doctrine/dbal/src/Schema/Table.php',
@@ -1110,6 +1125,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Doctrine\\DBAL\\Tools\\Console\\ConnectionProvider' => __DIR__ . '/..' . '/doctrine/dbal/src/Tools/Console/ConnectionProvider.php',
         'Doctrine\\DBAL\\Tools\\Console\\ConnectionProvider\\SingleConnectionProvider' => __DIR__ . '/..' . '/doctrine/dbal/src/Tools/Console/ConnectionProvider/SingleConnectionProvider.php',
         'Doctrine\\DBAL\\Tools\\Console\\ConsoleRunner' => __DIR__ . '/..' . '/doctrine/dbal/src/Tools/Console/ConsoleRunner.php',
+        'Doctrine\\DBAL\\Tools\\DsnParser' => __DIR__ . '/..' . '/doctrine/dbal/src/Tools/DsnParser.php',
         'Doctrine\\DBAL\\TransactionIsolationLevel' => __DIR__ . '/..' . '/doctrine/dbal/src/TransactionIsolationLevel.php',
         'Doctrine\\DBAL\\Types\\ArrayType' => __DIR__ . '/..' . '/doctrine/dbal/src/Types/ArrayType.php',
         'Doctrine\\DBAL\\Types\\AsciiStringType' => __DIR__ . '/..' . '/doctrine/dbal/src/Types/AsciiStringType.php',
@@ -3181,9 +3197,11 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Laravel\\Passport\\Console\\InstallCommand' => __DIR__ . '/..' . '/laravel/passport/src/Console/InstallCommand.php',
         'Laravel\\Passport\\Console\\KeysCommand' => __DIR__ . '/..' . '/laravel/passport/src/Console/KeysCommand.php',
         'Laravel\\Passport\\Console\\PurgeCommand' => __DIR__ . '/..' . '/laravel/passport/src/Console/PurgeCommand.php',
+        'Laravel\\Passport\\Contracts\\AuthorizationViewResponse' => __DIR__ . '/..' . '/laravel/passport/src/Contracts/AuthorizationViewResponse.php',
         'Laravel\\Passport\\Database\\Factories\\ClientFactory' => __DIR__ . '/..' . '/laravel/passport/database/factories/ClientFactory.php',
         'Laravel\\Passport\\Events\\AccessTokenCreated' => __DIR__ . '/..' . '/laravel/passport/src/Events/AccessTokenCreated.php',
         'Laravel\\Passport\\Events\\RefreshTokenCreated' => __DIR__ . '/..' . '/laravel/passport/src/Events/RefreshTokenCreated.php',
+        'Laravel\\Passport\\Exceptions\\AuthenticationException' => __DIR__ . '/..' . '/laravel/passport/src/Exceptions/AuthenticationException.php',
         'Laravel\\Passport\\Exceptions\\InvalidAuthTokenException' => __DIR__ . '/..' . '/laravel/passport/src/Exceptions/InvalidAuthTokenException.php',
         'Laravel\\Passport\\Exceptions\\MissingScopeException' => __DIR__ . '/..' . '/laravel/passport/src/Exceptions/MissingScopeException.php',
         'Laravel\\Passport\\Exceptions\\OAuthServerException' => __DIR__ . '/..' . '/laravel/passport/src/Exceptions/OAuthServerException.php',
@@ -3207,6 +3225,7 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Laravel\\Passport\\Http\\Middleware\\CheckForAnyScope' => __DIR__ . '/..' . '/laravel/passport/src/Http/Middleware/CheckForAnyScope.php',
         'Laravel\\Passport\\Http\\Middleware\\CheckScopes' => __DIR__ . '/..' . '/laravel/passport/src/Http/Middleware/CheckScopes.php',
         'Laravel\\Passport\\Http\\Middleware\\CreateFreshApiToken' => __DIR__ . '/..' . '/laravel/passport/src/Http/Middleware/CreateFreshApiToken.php',
+        'Laravel\\Passport\\Http\\Responses\\AuthorizationViewResponse' => __DIR__ . '/..' . '/laravel/passport/src/Http/Responses/AuthorizationViewResponse.php',
         'Laravel\\Passport\\Http\\Rules\\RedirectRule' => __DIR__ . '/..' . '/laravel/passport/src/Http/Rules/RedirectRule.php',
         'Laravel\\Passport\\Http\\Rules\\UriRule' => __DIR__ . '/..' . '/laravel/passport/src/Http/Rules/UriRule.php',
         'Laravel\\Passport\\Passport' => __DIR__ . '/..' . '/laravel/passport/src/Passport.php',
@@ -4073,7 +4092,9 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
         'Nette\\Utils\\AssertionException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\Callback' => __DIR__ . '/..' . '/nette/utils/src/Utils/Callback.php',
         'Nette\\Utils\\DateTime' => __DIR__ . '/..' . '/nette/utils/src/Utils/DateTime.php',
+        'Nette\\Utils\\FileInfo' => __DIR__ . '/..' . '/nette/utils/src/Utils/FileInfo.php',
         'Nette\\Utils\\FileSystem' => __DIR__ . '/..' . '/nette/utils/src/Utils/FileSystem.php',
+        'Nette\\Utils\\Finder' => __DIR__ . '/..' . '/nette/utils/src/Utils/Finder.php',
         'Nette\\Utils\\Floats' => __DIR__ . '/..' . '/nette/utils/src/Utils/Floats.php',
         'Nette\\Utils\\Helpers' => __DIR__ . '/..' . '/nette/utils/src/Utils/Helpers.php',
         'Nette\\Utils\\Html' => __DIR__ . '/..' . '/nette/utils/src/Utils/Html.php',
@@ -6950,10 +6971,10 @@ class ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit71e7b2844aedde9a5029ec2e5aab1503::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit685f2d89327392b2f891f96018f362da::$classMap;
 
         }, null, ClassLoader::class);
     }

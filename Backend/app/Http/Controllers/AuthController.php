@@ -9,13 +9,19 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use Carbon\Carbon;
 
-
 class AuthController extends Controller
 {
+    
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login','register']]);
     }
+
+        /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
 
     public function login(Request $request)
     {
@@ -34,12 +40,13 @@ class AuthController extends Controller
         }
 
         $user = JWTAuth::user();
-        return response()->json([
+        
+     return response()->json([
                 'status' => 'success',
-                'user' => $user,
-                'authorisation' => [
+                'message' => 'User login successfully',
+                'data' => [
+                    'user' => $user,
                     'token' => $token,
-                    'type' => 'bearer',
                 ]
             ]);
 
@@ -48,7 +55,7 @@ class AuthController extends Controller
     public function register(Request $request){
 
         $validator = validator($request->all(), [
-            'name' => 'required|string|max:255',
+            'user_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'user_role_id' => 'required|string|email|max:255|unique:users',
             'department_id' => 'required|string|email|max:255|unique:users',
@@ -56,27 +63,30 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        $dob = Carbon::createFromFormat('m/d/Y', $request->dob);
-    
+        $dob = Carbon::parse($request->user_dob)->format('Y-m-d H:i:s');
+        $today = Carbon::now()->format('Y-m-d H:i:s');
         $user = User::create([
-            'name' => $request->name,
+            'user_name' => $request->user_name,
             'email' => $request->email,
-            'phone' => $request->phone,
+            'user_phone' => $request->user_phone,
             'address' => $request->address,
-            'dob' => $dob,
+            'user_dob' => $dob,
+            'is_active' => 1,
+            'user_code' => $request->user_code,
             'department_id' => $request->department_id,
             'user_role_id' => $request->user_role_id,
             'password' => Hash::make($request->password),
+            'created_date' => $today,
+            'updated_date' => $today,
         ]);
         $token = JWTAuth::attempt($credentials);
 
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
-            'user' => $user,
-            'authorisation' => [
+            'data' => [
+                'user' => $user,
                 'token' => $token,
-                'type' => 'bearer',
             ]
         ]);
     }
