@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,13 +12,13 @@ use Carbon\Carbon;
 
 class AuthController extends Controller
 {
-    
+
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-        /**
+    /**
      * Get the login username to be used by the controller.
      *
      * @return string
@@ -40,26 +41,27 @@ class AuthController extends Controller
         }
 
         $user = JWTAuth::user();
-        
-     return response()->json([
-                'status' => 'success',
-                'message' => 'User login successfully',
-                'data' => [
-                    'user' => $user,
-                    'token' => $token,
-                ]
-            ]);
 
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User login successfully',
+            'data' => [
+                'user' => $user,
+                'token' => $token,
+            ]
+        ]);
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
 
         $validator = validator($request->all(), [
             'user_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'user_role_id' => 'required|string|email|max:255|unique:users',
             'department_id' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',]);
+            'password' => 'required|string|min:6',
+        ]);
 
         $credentials = $request->only('email', 'password');
 

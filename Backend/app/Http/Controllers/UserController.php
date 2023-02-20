@@ -7,6 +7,8 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -26,7 +28,7 @@ class UserController extends Controller
             'message' => "success",
             'message' => "SUCCESS",
             'data' => $users
-        ],200);
+        ], 200);
     }
 
     /**
@@ -65,8 +67,59 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, int $id)
     {
+        $data = $id;
+        $message = "SUCCESS";
+        $responseCode = 200;
+
+        try {
+            // Find Department
+            $user = User::find($id);
+            if (!$user) {
+                $data = $id;
+                $message = "NOT_FOUND";
+                $responseCode = 404;
+            } else {
+                // Check new department code already exists
+                if (User::where('id', $request->id)->count() > 0) {
+                    $data = $request->id;
+                    $message = "DUPLICATE";
+                    $responseCode = 302;
+                } else {
+
+                    $today = Carbon::now()->format('Y-m-d H:i:s');
+                    $dob = Carbon::parse($request->user_dob)->format('Y-m-d H:i:s');
+                    $user->$request->if->toInt();
+                    $user->user_name = $request->user_name;
+                    $user->email = $request->email;
+                    $user->user_phone = $request->user_phone;
+                    $user->address = $request->address;
+                    $user->user_dob = $dob;
+                    $user->is_active = $request->isActive;
+                    $user->user_code =  $request->user_code;
+                    $user->department_id = $request->department_id;
+                    $user->user_role_id = $request->user_role_id;
+                    $user->password = Hash::make($request->password);
+                    $user->updated_date = $today;
+                    $user->department_code = $request->department_code;
+                    $user->department_description = $request->department_description;
+                    $user->updated_date = date('Y-m-d H:i:s');
+
+                    // Update Department 
+                    $user->save();
+                }
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+        return response()->json([
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
+
         User::where('id', $id)->update($request->validated());
-        
+
         return response()->json([
             'success' => true,
             'message' => __('messages.users.update_success')
@@ -82,7 +135,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         User::where('id', $id)->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => __('messages.users.delete_success')
