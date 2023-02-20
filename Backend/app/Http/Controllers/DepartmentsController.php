@@ -23,10 +23,10 @@ class DepartmentsController extends Controller
         return response()->json([
             'data' => $departments,
             'message' => "SUCCESS"
-        ],200);
+        ], 200);
     }
 
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -49,7 +49,6 @@ class DepartmentsController extends Controller
                 $data = $request->department_code;
                 $message = "DUPLICATE";
                 $responseCode = 403;
-
             } else {
                 //Add new department
                 $dept = Department::create([
@@ -57,7 +56,7 @@ class DepartmentsController extends Controller
                     'department_description' => $request->department_description,
                     'created_date' => date('Y-m-d H:i:s')
                 ]);
-                
+
                 $data = $dept->department_id;
                 $message = "SUCCESS";
                 $responseCode = 200;
@@ -72,7 +71,7 @@ class DepartmentsController extends Controller
         return response()->json([
             'data' => $data,
             'message' => $message
-        ],$responseCode);
+        ], $responseCode);
     }
 
     /**
@@ -83,7 +82,7 @@ class DepartmentsController extends Controller
      */
     public function show(Departments $departments)
     {
-       //
+        //
     }
 
     /**
@@ -102,7 +101,7 @@ class DepartmentsController extends Controller
         try {
             // Find Department
             $department = Department::find($id);
-            if(!$department){
+            if (!$department) {
                 $data = $id;
                 $message = "NOT_FOUND";
                 $responseCode = 404;
@@ -112,11 +111,11 @@ class DepartmentsController extends Controller
                     $data = $request->department_code;
                     $message = "DUPLICATE";
                     $responseCode = 302;
-                }else {
+                } else {
                     $department->department_code = $request->department_code;
                     $department->department_description = $request->department_description;
                     $department->updated_date = date('Y-m-d H:i:s');
-                    
+
                     // Update Department 
                     $department->save();
                 }
@@ -129,7 +128,7 @@ class DepartmentsController extends Controller
         return response()->json([
             'data' => $data,
             'message' => $message
-        ],$responseCode);
+        ], $responseCode);
     }
 
     /**
@@ -143,29 +142,28 @@ class DepartmentsController extends Controller
         $data = "";
         $message = "";
         $responseCode = 200;
-        try{
+        try {
             // Find Department
             $department = Department::find($id);
-            if(!$department){
+            if (!$department) {
                 $data = $id;
                 $message = "NOT_FOUND";
                 $responseCode = 404;
+            } else {
+                //Delete Department
+                $department->delete();
+                $data = $department->department_id;
+                $message = "SUCCESS";
+                $responseCode = 200;
             }
-            //Delete Department
-            $department->delete();
-            
-            $data = $department->department_id;
-            $message = "SUCCESS";
-            $responseCode = 200;
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
             $message = $th->getMessage();
             $responseCode = 500;
-        } 
+        }
         return response()->json([
             'data' => $data,
             'message' => $message
-        ],$responseCode); 
+        ], $responseCode);
     }
 }
