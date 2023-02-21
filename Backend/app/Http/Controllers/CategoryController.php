@@ -49,7 +49,6 @@ class CategoryController extends Controller
             // Check new category code already exists
             $count = Category::where('category_code', $request->category_code)->count();
             if ($count > 0) {
-
                 $data = $request->category_code;
                 $message = "DUPLICATE";
                 $responseCode = 403;
@@ -58,7 +57,8 @@ class CategoryController extends Controller
                 $category = Category::create([
                     'category_code' => $request->category_code,
                     'category_type' => $request->category_type,
-                    'is_active' => 1
+                    'is_active' => 1,
+                    'created_date' => date('Y-m-d H:i:s')
                 ]);
 
                 $data = $category->category_id;

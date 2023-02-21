@@ -14,6 +14,7 @@ class Category extends Model
         'category_code',
         'category_type',
         'is_active',
+        'created_date',
         'updated_date'
     ];
 
@@ -21,5 +22,4 @@ class Category extends Model
     protected $primaryKey = 'category_id';
 
     public $timestamps = false;
-
 }

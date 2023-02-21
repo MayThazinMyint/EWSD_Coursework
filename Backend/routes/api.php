@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\dummyAPI;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
 
