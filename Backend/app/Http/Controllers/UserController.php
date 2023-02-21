@@ -7,6 +7,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,7 +22,7 @@ class UserController extends Controller
     {
         // $users = User::orderByDesc('id')->simplePaginate(10);
         // return new UserResourceCollection($users);
-        $users = User::all();
+        $users = User::where('is_active', 1)->get();
 
         // Return Json Response
         return response()->json([
@@ -65,7 +66,7 @@ class UserController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UserUpdateRequest $request, int $id)
+    public function update(Request $request, int $id)
     {
         $data = $id;
         $message = "SUCCESS";
@@ -80,7 +81,7 @@ class UserController extends Controller
                 $responseCode = 404;
             } else {
                 // Check new department code already exists
-                if (User::where('id', $request->id)->count() > 0) {
+                if (User::where('id', $request->id)->count() > 1) {
                     $data = $request->id;
                     $message = "DUPLICATE";
                     $responseCode = 302;
@@ -88,7 +89,7 @@ class UserController extends Controller
 
                     $today = Carbon::now()->format('Y-m-d H:i:s');
                     $dob = Carbon::parse($request->user_dob)->format('Y-m-d H:i:s');
-                    $user->$request->if->toInt();
+                    // $user->$request->id->toInt();
                     $user->user_name = $request->user_name;
                     $user->email = $request->email;
                     $user->user_phone = $request->user_phone;
@@ -100,8 +101,6 @@ class UserController extends Controller
                     $user->user_role_id = $request->user_role_id;
                     $user->password = Hash::make($request->password);
                     $user->updated_date = $today;
-                    $user->department_code = $request->department_code;
-                    $user->department_description = $request->department_description;
                     $user->updated_date = date('Y-m-d H:i:s');
 
                     // Update Department 
@@ -134,11 +133,32 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        User::where('id', $id)->delete();
+        $data = $id;
+        $message = "SUCCESS";
+        $responseCode = 200;
+        try {
+            // Find Category
+            $user = User::find($id);
+            $data = $id;
+            if (!$user) {
 
+                $message = "NOT_FOUND";
+                $responseCode = 404;
+            } else {
+                // Update Is_Active to 0 and updated date to current date
+                $user->is_active = 0;
+                $user->updated_date = date('Y-m-d H:i:s');
+                // Update 
+                $user->save();
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
         return response()->json([
-            'success' => true,
-            'message' => __('messages.users.delete_success')
-        ]);
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
     }
 }
