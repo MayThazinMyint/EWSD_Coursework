@@ -151,12 +151,15 @@ class DepartmentsController extends Controller
                 $message = "NOT_FOUND";
                 $responseCode = 404;
             }
-            //Delete Department
-            $department->delete();
+            else{
+                //Delete Department
+                $department->delete();
+                
+                $data = $department->department_id;
+                $message = "SUCCESS";
+                $responseCode = 200;
+            }
             
-            $data = $department->department_id;
-            $message = "SUCCESS";
-            $responseCode = 200;
         }
         catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
