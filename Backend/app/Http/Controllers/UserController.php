@@ -17,8 +17,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderByDesc('id')->simplePaginate(10);
-        return new UserResourceCollection($users);
+        // $users = User::orderByDesc('id')->simplePaginate(10);
+        // return new UserResourceCollection($users);
+        $users = User::all();
+
+        // Return Json Response
+        return response()->json([
+            'message' => "success",
+            'message' => "SUCCESS",
+            'data' => $users
+        ],200);
     }
 
     /**

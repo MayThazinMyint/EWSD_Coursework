@@ -4,7 +4,8 @@ import { fetchUsers } from "../../../features/user/userSlice";
 import { Link } from "react-router-dom";
 
 const UserList = () => {
-  const user = useSelector((state) => state.user.users);
+  const user = useSelector((state) => state.user);
+  console.log("user", user);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchUsers());
@@ -18,7 +19,7 @@ const UserList = () => {
     return <p>There is an error: {user.error}</p>;
   }
   return (
-    <div className="flex flex-col p-[50px]">
+    <div className="flex flex-col p-[50px] mt-[50px]">
       <div className="flex justify-between">
         <p className="font-bold text-lg ">User List</p>
         <Link to="/admin/register-user">
@@ -28,9 +29,9 @@ const UserList = () => {
         </Link>
       </div>
 
-      {user.loading && <div>Loading...</div>}
-      {!user.loading && user.error ? <div>Error: {user.error}</div> : null}
-      {!user.loading && user.users.length ? (
+      {/* {user.loading && <div>Loading...</div>}
+      {!user.loading && user.error ? <div>Error: {user.error}</div> : null} */}
+      {!user.loading && user.users.data.length ? (
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
             <div className="overflow-hidden">
@@ -71,23 +72,23 @@ const UserList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.users.map((user) => (
+                  {user.users.data.map((user) => (
                     <tr
-                      className={`border-b ${
-                        user.id % 2 === 0 ? "bg-gray-100" : "bg-white"
-                      }`}
+                      className={`border-b 
+                        //user.id % 2 === 0 ? "bg-gray-100" : "bg-white"
+                      `}
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {user.id}
+                        {user.user_name}
                       </td>
                       <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        {user.name}
+                        {user.user_name}
                       </td>
                       <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        {user.name}
+                        {user.user_name}
                       </td>
                       <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        {user.name}
+                        {user.user_name}
                       </td>
                       <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                         Edit

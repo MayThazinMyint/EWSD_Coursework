@@ -10,7 +10,7 @@ const initialState = {
 // Generates pending, fulfilled and rejected action types
 export const fetchUsers = createAsyncThunk("user/fetchUsers", () => {
   return axios
-    .get("http://localhost:8000/api/users")
+    .get("http://127.0.0.1:8000/api/users")
     .then((response) => response.data);
 });
 
