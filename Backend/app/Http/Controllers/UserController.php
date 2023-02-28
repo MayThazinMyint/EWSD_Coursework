@@ -23,12 +23,17 @@ class UserController extends Controller
         // $users = User::orderByDesc('id')->simplePaginate(10);
         // return new UserResourceCollection($users);
         $users = User::where('is_active', 1)->get();
+        $modifiedUsers = $users->map(function ($user, $key) {
+            $user['department_name'] = $user->department->department_description;
+            $user['user_role_name'] = $user->user_role->user_role_description;
+            return $user;
+        });
 
         // Return Json Response
         return response()->json([
             'message' => "success",
             'message' => "SUCCESS",
-            'data' => $users
+            'data' => $modifiedUsers
         ], 200);
     }
 
@@ -59,6 +64,37 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
+    public function getUserByID(Request $request, int $id)
+    {
+        $data = $id;
+        $message = "SUCCESS";
+        $responseCode = 200;
+
+        try {
+            // Find Department
+            $user = User::find($id);
+            if (!$user) {
+                $data = $id;
+                $message = "NOT_FOUND";
+                $responseCode = 404;
+            } else {
+                // Check new department code already exists
+                $user->department_name = $user->department->department_description;
+                $user->user_role_name = $user->user_role->user_role_description;
+                $data = $user;
+                $message = "SUCCESS";
+                $responseCode = 200;
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+        return response()->json([
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
+    }
     /**
      * Update the specified resource in storage.
      *
