@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     // user
     Route::get('users', [UserController::class, 'index']);
     Route::post('user/update/{id}', [UserController::class, 'update']);
+    Route::post('user/{id}', [UserController::class, 'getUserByID']);
     Route::post('user/delete/{id}', [UserController::class, 'destroy']);
 
     //Department
