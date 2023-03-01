@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Cookies from "js-cookie";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ConnectedFocusError } from "focus-formik-error";
-
+import { addUser } from "../../../features/user/userSlice";
 import ErrorServer from "../../../components/ErrorServer";
 import Label from "../../../components/Label";
 import department from "../../../constant/department";
 import role from "../../../constant/role";
+import DatePickerInput from "../../../components/DatePickerInput";
 const RegisterUser = () => {
   const [errorServer, setErrorServer] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // initial values
   const initialValues = {
     user_name: "",
@@ -29,11 +36,11 @@ const RegisterUser = () => {
     user_phone: Yup.number().required("Phone number is required."),
     email: Yup.string().required("Email is required."),
     password: Yup.string().required("Password is required."),
-    department: Yup.string().required("Department is required."),
-    user_dob: Yup.string().required("Date of Birth is required."),
-    user_code: Yup.string().required("User code is required."),
     department_id: Yup.string().required("Department is required."),
     user_role_id: Yup.string().required("Role is required."),
+
+    user_code: Yup.string().required("User code is required."),
+    address: Yup.string().required("Address is required."),
   });
   // for preventing on enter key formik
   const onKeyDown = (keyEvent) => {
@@ -43,9 +50,11 @@ const RegisterUser = () => {
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
-    console.log("data", data);
+    console.log("regiser data", data);
     resetForm();
-    navigate("/admin/user-list");
+    dispatch(addUser(data));
+
+    //navigate("/admin/user-list");
   };
   return (
     <section className=" dark:bg-gray-900">
@@ -166,6 +175,50 @@ const RegisterUser = () => {
                   </div>
                   <div className="flex md:flex-row flex-col items-center md:space-x-6">
                     <div>
+                      <Label text="User Code" required="*" hint="" />
+                      <Field
+                        type="text"
+                        name="user_code"
+                        placeholder="Enter user code"
+                        className={` bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-[200px]  block p-2.5   ${
+                          formik.errors.user_code && formik.touched.user_code
+                            ? "border border-red-500 "
+                            : ""
+                        }`}
+                        autoComplete="off"
+                      />
+                      <div className="validate-show">
+                        <ErrorMessage
+                          name="user_role_id"
+                          component="div"
+                          className="text-red-600"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label text="Address" required="*" hint="" />
+                      <Field
+                        type="text"
+                        name="address"
+                        placeholder="Enter address"
+                        className={` bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-[200px]  block p-2.5   ${
+                          formik.errors.address && formik.touched.address
+                            ? "border border-red-500 "
+                            : ""
+                        }`}
+                        autoComplete="off"
+                      />
+                      <div className="validate-show">
+                        <ErrorMessage
+                          name="address"
+                          component="div"
+                          className="text-red-600"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex md:flex-row flex-col items-center md:space-x-6">
+                    <div>
                       <Label text="Role" required="*" hint="" />
                       <Field
                         as="select"
@@ -230,6 +283,7 @@ const RegisterUser = () => {
                       </div>
                     </div>
                   </div>
+
                   <div className="text-center pt-4">
                     <button
                       className="w-[25%] text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"

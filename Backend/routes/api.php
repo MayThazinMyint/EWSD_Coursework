@@ -10,23 +10,21 @@ use App\Http\Controllers\DepartmentsController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
-Route::get('users', [UserController::class, 'index']);
-Route::get('departments', [DepartmentsController::class, 'index']);
-Route::post('department/add', [DepartmentsController::class, 'store']);
+Route::get('users', [dummyAPI::class, 'getUsers']);
 
 // Authentication
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth.jwt'], function () {
+
+    // user
     Route::get('users', [UserController::class, 'index']);
-    Route::get('dummy', [dummyAPI::class, 'getUsers']);
-    // Department
+    Route::post('user/update/{id}', [UserController::class, 'update']);
+    Route::post('user/delete/{id}', [UserController::class, 'destroy']);
+
     //Department
     Route::get('departments', [DepartmentsController::class, 'index']);
     Route::post('department/add', [DepartmentsController::class, 'store']);
-
-    // department update >> http://localhost:8000/api/department_update/{department_id_to_update}
-    // request body >> {"department_code": "Testing2","department_description": "Testing2"}
     Route::post('department/update/{id}', [DepartmentsController::class, 'update']);
     Route::delete('department/delete/{id}', [DepartmentsController::class, 'destroy']);
 

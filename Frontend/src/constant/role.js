@@ -1,1 +1,1 @@
-export default ["QA Manager", "QA Coordinator", "Staff"];
+export default [0, 1, 2];

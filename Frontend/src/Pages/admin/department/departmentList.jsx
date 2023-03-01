@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ConnectedFocusError } from "focus-formik-error";
-import { useNavigate } from "react-router-dom";
 
 import {
   fetchDepartments,
@@ -13,25 +12,25 @@ import Label from "../../../components/Label";
 
 const DepartmentList = () => {
   const [showModal, setShowModal] = useState(false);
-  const department = useSelector((state) => state);
-  console.log("department", department.department.departments.data);
-  //const [departments,setDeaprtments] = useState("")
+  const departmentList = useSelector((state) => state.department);
+
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   useEffect(() => {
     dispatch(fetchDepartments());
-  }, [dispatch]);
+  }, []);
+  console.log("departmentList", departmentList.departments);
+  if (departmentList.loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (departmentList.error) {
+    return <p>There is an error: {departmentList.error}</p>;
+  }
   const initialValues = {
     department_code: "",
     department_description: "",
   };
-  if (department.loading || department == null) {
-    return <p>Loading...</p>;
-  }
 
-  if (department.error) {
-    return <p>There is an error: {department.error}</p>;
-  }
   // validations
   const validationSchema = Yup.object({
     department_code: Yup.string().required("Department Code is required."),
@@ -48,14 +47,10 @@ const DepartmentList = () => {
   //submit data
   const onSubmit = async (data, { resetForm }) => {
     console.log("data", data);
-    dispatch(
-      postDepartment({
-        data,
-      })
-    );
+    dispatch(postDepartment(data));
     resetForm();
     setShowModal(false);
-    //navigate("/admin/user-list");
+    //dispatch(fetchDepartments());
   };
   return (
     <div className="flex flex-col md:px-[300px] md:py-[50px] px-[50px] mt-[50px]">
@@ -104,7 +99,7 @@ const DepartmentList = () => {
                               <Field
                                 type="text"
                                 name="department_code"
-                                placeholder="Enter user name"
+                                placeholder="Enter department code"
                                 className={` w-[200px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block p-2.5  ${
                                   formik.errors.department_code &&
                                   formik.touched.department_code
@@ -130,7 +125,7 @@ const DepartmentList = () => {
                               <Field
                                 type="text"
                                 name="department_description"
-                                placeholder="Enter user name"
+                                placeholder="Enter department description"
                                 className={` w-[200px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block p-2.5  ${
                                   formik.errors.department_description &&
                                   formik.touched.department_description
@@ -172,56 +167,57 @@ const DepartmentList = () => {
           </div>
         </>
       ) : null}
-
-      {/* <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="overflow-hidden">
-            <table className="min-w-full">
-              <thead className="bg-white border-b">
-                <tr>
-                  <th
-                    scope="col"
-                    className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    ID
-                  </th>
-                  <th
-                    scope="col"
-                    className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Code
-                  </th>
-                  <th
-                    scope="col"
-                    className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                  >
-                    Name
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {department.department.departments.data.map((department) => (
-                  <tr
-                    className={`border-b
+      {!departmentList.loading ? (
+        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="overflow-hidden">
+              <table className="min-w-full">
+                <thead className="bg-white border-b">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                    >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                    >
+                      Code
+                    </th>
+                    <th
+                      scope="col"
+                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                    >
+                      Name
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {departmentList.departments.data.map((department) => (
+                    <tr
+                      className={`border-b
                         //user.id % 2 === 0 ? "bg-gray-100" : "bg-white"
                       `}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {department.department_id}
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      {department.department_code}
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      {department.department_description}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {department.department_id}
+                      </td>
+                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                        {department.department_code}
+                      </td>
+                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                        {department.department_description}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div> */}
+      ) : null}
     </div>
   );
 };

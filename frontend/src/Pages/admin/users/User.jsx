@@ -1,7 +1,7 @@
 import React from 'react';
-import ProfilePicture from '../../components/idea/ProfilePicture';
+import ProfilePicture from '../../../components/idea/ProfilePicture';
 
-const EditUser = () => {
+const User = () => {
   return (
     <div class="flex items-center h-[75vh]  w-full justify-center">
       <div class="max-w-sm">
@@ -47,4 +47,4 @@ const EditUser = () => {
   );
 };
 
-export default EditUser;
+export default User;

@@ -44,7 +44,7 @@ export const postDepartment = createAsyncThunk(
 //   }
 // );
 
-const departmentSlice = createSlice({
+const categorySlice = createSlice({
   name: "department",
   initialState,
   extraReducers: (builder) => {
@@ -79,4 +79,4 @@ const departmentSlice = createSlice({
   },
 });
 
-export default departmentSlice.reducer;
+export default categorySlice.reducer;

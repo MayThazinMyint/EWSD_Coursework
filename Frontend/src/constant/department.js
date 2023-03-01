@@ -1,1 +1,1 @@
-export default ["IT", "Business", "Computing"];
+export default [0, 1, 2];
