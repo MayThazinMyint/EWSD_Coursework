@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit685f2d89327392b2f891f96018f362da
+class ComposerStaticInit033a5ec0e427b241d799da2f6f8a7c5a
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -34,6 +34,7 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
         '320163ac6b93aebe3dc25b60a0533d56' => __DIR__ . '/..' . '/spatie/laravel-ignition/src/helpers.php',
+        '14f5c1f7ff75dfb48c2ad8f5675d50d3' => __DIR__ . '/../..' . '/app/Helpers/EmailHelper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -629,10 +630,13 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Helpers\\EmailHelper' => __DIR__ . '/../..' . '/app/Helpers/EmailHelper.php',
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/CategoryController.php',
+        'App\\Http\\Controllers\\CommentController' => __DIR__ . '/../..' . '/app/Http/Controllers/CommentController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DepartmentsController' => __DIR__ . '/../..' . '/app/Http/Controllers/DepartmentsController.php',
+        'App\\Http\\Controllers\\EmailSenderController' => __DIR__ . '/../..' . '/app/Http/Controllers/EmailSenderController.php',
         'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
         'App\\Http\\Controllers\\UserRoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserRoleController.php',
         'App\\Http\\Controllers\\dummyAPI' => __DIR__ . '/../..' . '/app/Http/Controllers/dummyAPI.php',
@@ -654,7 +658,9 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
         'App\\Http\\Requests\\UserUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/UserUpdateRequest.php',
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\Http\\Resources\\UserResourceCollection' => __DIR__ . '/../..' . '/app/Http/Resources/UserResourceCollection.php',
+        'App\\Mail\\EWSDMailSender' => __DIR__ . '/../..' . '/app/Mail/EWSDMailSender.php',
         'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',
+        'App\\Models\\Comment' => __DIR__ . '/../..' . '/app/Models/Comment.php',
         'App\\Models\\Department' => __DIR__ . '/../..' . '/app/Models/Department.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserRole' => __DIR__ . '/../..' . '/app/Models/UserRole.php',
@@ -6629,6 +6635,9 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
         'Whoops\\Handler\\PlainTextHandler' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Handler/PlainTextHandler.php',
         'Whoops\\Handler\\PrettyPageHandler' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Handler/PrettyPageHandler.php',
         'Whoops\\Handler\\XmlResponseHandler' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Handler/XmlResponseHandler.php',
+        'Whoops\\Inspector\\InspectorFactory' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Inspector/InspectorFactory.php',
+        'Whoops\\Inspector\\InspectorFactoryInterface' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Inspector/InspectorFactoryInterface.php',
+        'Whoops\\Inspector\\InspectorInterface' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Inspector/InspectorInterface.php',
         'Whoops\\Run' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Run.php',
         'Whoops\\RunInterface' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/RunInterface.php',
         'Whoops\\Util\\HtmlDumperOutput' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/HtmlDumperOutput.php',
@@ -6973,10 +6982,10 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit685f2d89327392b2f891f96018f362da::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit033a5ec0e427b241d799da2f6f8a7c5a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit033a5ec0e427b241d799da2f6f8a7c5a::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit033a5ec0e427b241d799da2f6f8a7c5a::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit033a5ec0e427b241d799da2f6f8a7c5a::$classMap;
 
         }, null, ClassLoader::class);
     }
