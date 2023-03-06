@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\dummyAPI;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
 use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\IdeasController;
@@ -17,8 +16,6 @@ Route::get('users', [dummyAPI::class, 'getUsers']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth.jwt'], function () {
-
-    // user
     Route::get('users', [UserController::class, 'index']);
     Route::post('user/update/{id}', [UserController::class, 'update']);
     Route::post('user/delete/{id}', [UserController::class, 'destroy']);
@@ -39,7 +36,4 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ideas/{id}', [IdeasController::class, 'index']);
     Route::post('ideas/add', [IdeasController::class, 'store']);
     Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
-
 });
-
-
