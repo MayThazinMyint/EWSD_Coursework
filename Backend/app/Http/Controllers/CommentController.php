@@ -7,9 +7,7 @@ use App\Models\Comment;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
-use App\Mail\EWSDMailSender;
 use App\Helpers\EmailHelper;
-use Illuminate\Support\Facades\Mail;
 
 
 class CommentController extends Controller

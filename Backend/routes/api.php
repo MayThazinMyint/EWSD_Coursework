@@ -27,7 +27,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('users', [UserController::class, 'index']);
     Route::post('user/update/{id}', [UserController::class, 'update']);
     Route::post('user/{id}', [UserController::class, 'getUserByID']);
-    Route::post('user/delete/{id}', [UserController::class, 'destroy']);
+    Route::delete('user/delete/{id}', [UserController::class, 'destroy']);
 
     //Department
     Route::get('departments', [DepartmentsController::class, 'index']);
@@ -38,11 +38,11 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     // Category
     Route::get('category_lists', [CategoryController::class, 'index']);
     Route::post('category_add', [CategoryController::class, 'store']);
-    Route::post('category_delete/{id}', [CategoryController::class, 'destroy']);
+    Route::delete('category_delete/{id}', [CategoryController::class, 'destroy']);
 
     // Comment
     Route::get('comment/{idea_id}', [CommentController::class, 'index']);
     Route::post('comment/add', [CommentController::class, 'store']);
     Route::post('comment/update/{id}', [CommentController::class, 'update']);
-    Route::post('comment/delete/{id}', [CommentController::class, 'destroy']);
+    Route::delete('comment/delete/{id}', [CommentController::class, 'destroy']);
 });
