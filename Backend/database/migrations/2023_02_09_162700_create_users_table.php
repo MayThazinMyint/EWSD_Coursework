@@ -13,22 +13,25 @@ return new class extends Migration
      */
     public function up()
     {
+       
         Schema::dropIfExists('users');
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->integer('id')->unsign(false)->autoIncrement()->notnull();
+            $table->string('user_name');
             $table->string('email')->unique();
-            $table->string('phone');
-            $table->string('dob');
+            $table->string('user_phone');
+            $table->string('user_dob');
             $table->string('address');
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('user_code');
+            $table->dateTime('created_date');
+            $table->dateTime('updated_date');
             $table->integer('department_id');
             $table->integer('user_role_id');
             $table->string('password');
+            $table->tinyInteger('is_active');
             $table->rememberToken();
-            $table->timestamps();
-            $table->foreign('user_role_id')->references('id')->on('user_roles')->onDelete('cascade');
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('user_role_id')->references('user_role_id')->on('user_roles')->onDelete('cascade');
+            $table->foreign('department_id')->references('department_id')->on('departments')->onDelete('cascade');
         });
     }
 
