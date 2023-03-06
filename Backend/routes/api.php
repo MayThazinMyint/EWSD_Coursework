@@ -4,30 +4,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\dummyAPI;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CommentController;
+use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
+use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\IdeasController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
 Route::get('users', [dummyAPI::class, 'getUsers']);
 
-// Comment
-Route::get('comment/{idea_id}', [CommentController::class, 'index']);
-Route::post('comment/add', [CommentController::class, 'store']);
-Route::post('comment/update/{id}', [CommentController::class, 'update']);
-Route::post('comment/delete/{id}', [CommentController::class, 'destroy']);
-
 // Authentication
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth.jwt'], function () {
-
-    // user
     Route::get('users', [UserController::class, 'index']);
     Route::post('user/update/{id}', [UserController::class, 'update']);
-    Route::post('user/{id}', [UserController::class, 'getUserByID']);
-    Route::delete('user/delete/{id}', [UserController::class, 'destroy']);
+    Route::post('user/delete/{id}', [UserController::class, 'destroy']);
 
     //Department
     Route::get('departments', [DepartmentsController::class, 'index']);
@@ -38,11 +30,16 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     // Category
     Route::get('category_lists', [CategoryController::class, 'index']);
     Route::post('category_add', [CategoryController::class, 'store']);
-    Route::delete('category_delete/{id}', [CategoryController::class, 'destroy']);
+    Route::post('category_delete/{id}', [CategoryController::class, 'destroy']);
 
-    // Comment
-    Route::get('comment/{idea_id}', [CommentController::class, 'index']);
-    Route::post('comment/add', [CommentController::class, 'store']);
-    Route::post('comment/update/{id}', [CommentController::class, 'update']);
-    Route::delete('comment/delete/{id}', [CommentController::class, 'destroy']);
+    //Idea
+    Route::get('ideas', [IdeasController::class, 'index']);
+    Route::get('ideas/{id}', [IdeasController::class, 'index']);
+    Route::post('ideas/add', [IdeasController::class, 'store']);
+    Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
+
+    //Academic
+    Route::get('academic_years', [AcademicYearController::class, 'index']);
+    Route::post('academic_year/add', [AcademicYearController::class, 'store']);
+    Route::post('academic_year/{id}', [AcademicYearController::class, 'destroy']);
 });
