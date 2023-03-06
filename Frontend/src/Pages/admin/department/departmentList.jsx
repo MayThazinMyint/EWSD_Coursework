@@ -51,7 +51,7 @@ const DepartmentList = () => {
     dispatch(postDepartment(data));
     resetForm();
     setShowModal(false);
-    //dispatch(fetchDepartments());
+    
   };
   return (
     <div className="flex flex-col">
