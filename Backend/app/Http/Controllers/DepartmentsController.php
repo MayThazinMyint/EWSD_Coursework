@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreDepartmentsRequest;
 use App\Http\Requests\UpdateDepartmentsRequest;
@@ -80,10 +81,10 @@ class DepartmentsController extends Controller
      * @param  \App\Models\Departments  $departments
      * @return \Illuminate\Http\Response
      */
-    public function show(Departments $departments)
-    {
-        //
-    }
+    // public function show(Departments $departments)
+    // {
+    //     //
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -150,11 +151,21 @@ class DepartmentsController extends Controller
                 $message = "NOT_FOUND";
                 $responseCode = 404;
             } else {
-                //Delete Department
-                $department->delete();
-                $data = $department->department_id;
-                $message = "SUCCESS";
-                $responseCode = 200;
+
+                if(User::where('department_id',$id)->count() > 0){
+                    $data = $id;
+                    $message = "DATA_IN_USE";
+                    $responseCode = 406;
+                }
+                else{
+                    //Delete Department
+                    $department->delete();
+                    $data = $department->department_id;
+                    $message = "SUCCESS";
+                    $responseCode = 200;
+                }
+
+                
             }
         } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";

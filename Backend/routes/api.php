@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\IdeasController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -30,6 +31,12 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('category_lists', [CategoryController::class, 'index']);
     Route::post('category_add', [CategoryController::class, 'store']);
     Route::post('category_delete/{id}', [CategoryController::class, 'destroy']);
+
+    //Idea
+    Route::get('ideas', [IdeasController::class, 'index']);
+    Route::get('ideas/{id}', [IdeasController::class, 'index']);
+    Route::post('ideas/add', [IdeasController::class, 'store']);
+    Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
 
     //Academic
     Route::get('academic_years', [AcademicYearController::class, 'index']);
