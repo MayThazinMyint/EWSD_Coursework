@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home';
 import './App.css';
-import ProtectedRoute from './Pages/routes/ProtectedRoutes';
+import ProtectedRoutes from './Pages/routes/ProtectedRoutes';
 import Navbar from './components/common/Navbar';
 import Error from './Pages/routes/Error';
 import RegisterUser from './Pages/admin/users/RegisterUser';
@@ -19,23 +19,25 @@ import Profile from './Pages/staff/Profile';
 import Ideas from './Pages/staff/Ideas';
 import About from './Pages/About';
 import Contact from './Pages/Contact';
+import Sidebar from './components/sidebar/Sidebar';
 function App() {
   return (
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route
-        path="/admin/user-list"
-        element={<ProtectedRoute isAuth={true} />}
-      /> */}
-        <Route path="/admin/register-user" element={<RegisterUser />} />
+        {/* admin routes */}
+        <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/admin/user-list" element={<UserList />} />
         <Route path="/admin/department-list" element={<DepartmentList />} />
         <Route path="/admin/category-list" element={<CategoryList />} />
+        <Route path="/admin/register-user" element={<RegisterUser />} />
+        <Route path="/admin/user/:id" element={<User />} />
+        {/* admin routes */}
+        
         <Route path="/idea/create-idea" element={<CreateIdea />} />
         <Route path="/idea/all" element={<IdeaList />} />
         <Route path="/idea/details" element={<Idea />} />
-        <Route path="/admin/user/:id" element={<User />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/user/profile" element={<Profile />} />
         <Route path="/user/ideas" element={<Ideas />} />

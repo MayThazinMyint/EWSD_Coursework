@@ -11,9 +11,9 @@ const initialState = {
 export const fetchDepartments = createAsyncThunk(
   "department/fetchDepartments",
   () => {
-    return axios
-      .get("http://127.0.0.1:8000/api/departments")
-      .then((response) => response.data);
+    const token = Cookies.get('token'); // get the token from localStorage
+    const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
+    return axios.get('http://127.0.0.1:8000/api/departments',{headers}).then((response) => response.data);
   }
 );
 
