@@ -8,6 +8,7 @@ use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\IdeasController;
+use App\Http\Controllers\CommentController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -38,8 +39,16 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('ideas/add', [IdeasController::class, 'store']);
     Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
 
+    //Comment    
+    Route::get('comment/{idea_id}', [CommentController::class, 'index']);
+    Route::get('comment/add', [CommentController::class, 'store']); 
+    Route::post('comment/delete/{id}', [CommentController::class, 'destroy']);
+    Route::post('comment/update/{id}', [CommentController::class, 'update']);
+    
     //Academic
     Route::get('academic_years', [AcademicYearController::class, 'index']);
     Route::post('academic_year/add', [AcademicYearController::class, 'store']);
     Route::post('academic_year/{id}', [AcademicYearController::class, 'destroy']);
 });
+
+ Route::get('users', [UserController::class, 'index']);

@@ -14,7 +14,8 @@ class Department extends Model
         'department_code',
         'department_description',
         'created_date',
-        'updated_date'
+        'updated_date',
+       
     ];
 
     protected $table = 'departments';
