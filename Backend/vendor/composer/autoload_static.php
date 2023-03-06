@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit685f2d89327392b2f891f96018f362da
+class ComposerStaticInitdadc531bf9491cd08f134a0d4f38618e
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -6629,6 +6629,9 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
         'Whoops\\Handler\\PlainTextHandler' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Handler/PlainTextHandler.php',
         'Whoops\\Handler\\PrettyPageHandler' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Handler/PrettyPageHandler.php',
         'Whoops\\Handler\\XmlResponseHandler' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Handler/XmlResponseHandler.php',
+        'Whoops\\Inspector\\InspectorFactory' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Inspector/InspectorFactory.php',
+        'Whoops\\Inspector\\InspectorFactoryInterface' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Inspector/InspectorFactoryInterface.php',
+        'Whoops\\Inspector\\InspectorInterface' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Inspector/InspectorInterface.php',
         'Whoops\\Run' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Run.php',
         'Whoops\\RunInterface' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/RunInterface.php',
         'Whoops\\Util\\HtmlDumperOutput' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/HtmlDumperOutput.php',
@@ -6973,10 +6976,10 @@ class ComposerStaticInit685f2d89327392b2f891f96018f362da
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit685f2d89327392b2f891f96018f362da::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit685f2d89327392b2f891f96018f362da::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitdadc531bf9491cd08f134a0d4f38618e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitdadc531bf9491cd08f134a0d4f38618e::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitdadc531bf9491cd08f134a0d4f38618e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitdadc531bf9491cd08f134a0d4f38618e::$classMap;
 
         }, null, ClassLoader::class);
     }

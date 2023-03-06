@@ -25,12 +25,12 @@ class StoreDepartmentsRequest extends FormRequest
     {
         if(request()->isMethod('post')) {
             return [
-                'department_code' => 'required|string|max:20',
-                'department_description' => 'required|string|max:50'
+                'department_code' => 'string|max:20',
+                'department_description' => 'string|max:20'
             ];
         } 
     }
-
+//required|string|max:20
     public function messages()
     {
         if(request()->isMethod('post')) {

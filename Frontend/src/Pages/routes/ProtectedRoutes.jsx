@@ -1,11 +1,8 @@
-import React from "react";
-import { Route } from "react-router-dom";
+import { Outlet, Navigate } from 'react-router-dom';
 
-import Login from "../Login";
-import UserList from "../admin/users/UserList";
-
-const ProtectedRoute = ({ isAuth }) => {
-  return isAuth ? <UserList /> : <Login />;
+const ProtectedRoutes = () => {
+  let auth = { token: true };
+  return auth.token ? <Outlet /> : <Navigate to="/login" />;
 };
 
-export default ProtectedRoute;
+export default ProtectedRoutes;

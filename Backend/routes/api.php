@@ -20,8 +20,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     // user
     Route::get('users', [UserController::class, 'index']);
     Route::post('user/update/{id}', [UserController::class, 'update']);
-    Route::post('user/{id}', [UserController::class, 'getUserByID']);
-    Route::post('user/delete/{id}', [UserController::class, 'destroy']);
+    Route::get('user/{id}', [UserController::class, 'getUserByID']);
+    Route::delete('user/delete/{id}', [UserController::class, 'destroy']);
 
     //Department
     Route::get('departments', [DepartmentsController::class, 'index']);
@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     // Category
     Route::get('category_lists', [CategoryController::class, 'index']);
     Route::post('category_add', [CategoryController::class, 'store']);
-    Route::post('category_delete/{id}', [CategoryController::class, 'destroy']);
+    Route::delete('category_delete/{id}', [CategoryController::class, 'destroy']);
 });
 
  Route::get('users', [UserController::class, 'index']);
