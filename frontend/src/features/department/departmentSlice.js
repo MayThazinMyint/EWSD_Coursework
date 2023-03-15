@@ -17,6 +17,14 @@ export const fetchDepartments = createAsyncThunk(
   }
 );
 
+export const deleteDepartment = createAsyncThunk('department/deleteDepartment', (id) => {
+  const token = Cookies.get('token');
+  const headers = { Authorization: `Bearer ${token}` };
+  console.log('delete dept ', id, token);
+  return axios
+    .delete(`http://127.0.0.1:8000/api/department/delete/${id}`, { headers })
+    .then((response) => response.data);
+});
 export const postDepartment = createAsyncThunk(
   "department/postDepartment",
   (data) => {
@@ -75,6 +83,10 @@ const departmentSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.data = null;
+    });
+    builder.addCase(deleteDepartment.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
     });
   },
 });

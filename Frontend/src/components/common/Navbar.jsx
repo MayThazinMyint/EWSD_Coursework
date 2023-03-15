@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../features/user/userSlice'
+import { logout } from '../../features/auth/authSlice'
 import logo from '../../assets/logo.png';
+import Cookies from 'js-cookie';
 const Navbar = () => {
-  const isLogin = useSelector((state) => state.user.isAuthenticated);
-  console.log('isAuthenticated', isLogin);
+  const isLogin = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const handleLogout = () => {
+    Cookies.set('isAuthenticated', false);
+    Cookies.set('userRole', null);
     dispatch(logout());
-    navigate('/login')
+    navigate('/')
   };
   return (
-    <div className="navbar bg-base-100 px-[50px]">
+    <div className="navbar bg-base-100 px-[100px]">
       <div className="flex-1">
         <p className="btn btn-ghost normal-case text-xl">
           <img src={logo} className="w-full h-[50px]" alt="" />
@@ -24,7 +26,7 @@ const Navbar = () => {
           <li className="list-none ">Home</li>
         </Link>
         <Link to="/idea/all">
-          <li className="list-none">Feeds</li>
+          <li className="list-none">Ideas</li>
         </Link>
         <Link to="/about">
           <li className="list-none">About Us</li>
@@ -32,6 +34,12 @@ const Navbar = () => {
         <Link to="/contact">
           <li className="list-none">Contact Us</li>
         </Link>
+        {isLogin ? (
+          <Link to="/idea/add">
+            <li className="list-none">Add Idea</li>
+          </Link>
+        ) : null}
+
         {isLogin ? (
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
@@ -48,10 +56,7 @@ const Navbar = () => {
             >
               <Link to="/user/profile">
                 <li>
-                  <div className="justify-between">
-                    Profile
-                    <span className="badge">New</span>
-                  </div>
+                  <p>My Profile</p>
                 </li>
               </Link>
 

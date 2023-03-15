@@ -9,6 +9,7 @@ use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\IdeasController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -20,7 +21,8 @@ Route::post('login', [AuthController::class, 'login']);
 Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('users', [UserController::class, 'index']);
     Route::post('user/update/{id}', [UserController::class, 'update']);
-    Route::post('user/delete/{id}', [UserController::class, 'destroy']);
+    Route::delete('user/delete/{id}', [UserController::class, 'destroy']);
+    Route::get('user/{id}', [UserController::class, 'getUserByID']);
 
     //Department
     Route::get('departments', [DepartmentsController::class, 'index']);
@@ -31,7 +33,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     // Category
     Route::get('category_lists', [CategoryController::class, 'index']);
     Route::post('category_add', [CategoryController::class, 'store']);
-    Route::post('category_delete/{id}', [CategoryController::class, 'destroy']);
+    Route::delete('category_delete/{id}', [CategoryController::class, 'destroy']);
 
     //Idea
     Route::get('ideas', [IdeasController::class, 'index']);

@@ -50,9 +50,22 @@ export const addUser = createAsyncThunk('user/addUser', async (data) => {
   return axios.post('http://127.0.0.1:8000/api/register', data).then((response) => response.data);
 });
 
+export const updateUser = createAsyncThunk('user/updateUser', async (dataObj) => {
+  console.log('update user', dataObj.data, dataObj.id);
+  const token = Cookies.get('token');
+  const headers = { Authorization: `Bearer ${token}` };
+  return axios
+    .post(`http://127.0.0.1:8000/api/user/update/${dataObj.id}`, dataObj.data, { headers })
+    .then((response) => response.data);
+});
+
 export const login = createAsyncThunk('user/login', async (data) => {
   console.log('login user', data);
-  return axios.post('http://127.0.0.1:8000/api/login', data).then((response) => response.data);
+  const token = Cookies.get('token');
+  const headers = { Authorization: `Bearer ${token}` };
+  return axios
+    .post('http://127.0.0.1:8000/api/login', data, { headers })
+    .then((response) => response.data);
 });
 
 export const logout = createAsyncThunk('user/logout', async () => {
@@ -90,33 +103,6 @@ const userSlice = createSlice({
       state.users = [];
       state.error = action.error.message;
     });
-    builder.addCase(login.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.loading = false;
-      state.isAuthenticated = true;
-      state.users = action.payload;
-      state.error = '';
-    });
-    builder.addCase(login.rejected, (state, action) => {
-      state.loading = false;
-      state.users = [];
-      state.error = action.error.message;
-    });
-    builder.addCase(logout.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(logout.fulfilled, (state, action) => {
-      state.loading = false;
-      state.isAuthenticated = false;
-      state.error = '';
-    });
-    builder.addCase(logout.rejected, (state, action) => {
-      state.loading = false;
-      state.users = [];
-      state.error = action.error.message;
-    });
     builder.addCase(fetchSingleUser.pending, (state) => {
       state.loading = true;
     });
@@ -136,6 +122,19 @@ const userSlice = createSlice({
     });
     builder.addCase(deleteUser.rejected, (state, action) => {
       state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(updateUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.users = action.payload;
+      state.error = '';
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
+      state.loading = false;
+      state.users = [];
       state.error = action.error.message;
     });
   },

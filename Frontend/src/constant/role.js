@@ -1,19 +1,19 @@
 const role = [
   {
-    id: 0,
-    roleName: 'QA Manager',
-  },
-  {
     id: 1,
-    roleName: 'QA Coordinator',
-  },
-  {
-    id: 2,
     roleName: 'Admin',
   },
   {
+    id: 2,
+    roleName: 'QA Assurance Manager',
+  },
+  {
     id: 3,
-    roleName: 'Staff',
+    roleName: 'Quality Assurance Coordinator',
+  },
+  {
+    id: 4,
+    roleName: 'Staffs',
   },
 ];
 

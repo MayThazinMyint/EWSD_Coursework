@@ -1,30 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { ConnectedFocusError } from "focus-formik-error";
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { ConnectedFocusError } from 'focus-formik-error';
 import { RiDeleteBinLine } from 'react-icons/ri';
 
 import {
-  fetchCategories,postCategory,deleteCategory
-  
-} from "../../../features/category/categorySlice";
-import Label from "../../../components/Label";
-import Sidebar from "../../../components/sidebar/Sidebar";
+  fetchCategories,
+  postCategory,
+  deleteCategory,
+} from '../../../features/category/categorySlice';
+import Label from '../../../components/Label';
+import Sidebar from '../../../components/sidebar/Sidebar';
 
 const CategoryList = () => {
   const [showModal, setShowModal] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-const [categoryId, setCategoryId] = useState();
+  const [categoryId, setCategoryId] = useState();
   const handleCancel = () => {
     setShowWarning(false);
   };
 
-  const handleOk = () => {
-    setShowWarning(false);
-  };
   const categoryList = useSelector((state) => state.category);
-  
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCategories());
@@ -63,7 +61,7 @@ const [categoryId, setCategoryId] = useState();
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
-    console.log("data", data);
+    console.log('data', data);
     dispatch(postCategory(data));
     resetForm();
     setShowModal(false);
@@ -79,7 +77,7 @@ const [categoryId, setCategoryId] = useState();
   return (
     <div>
       <Sidebar />
-      <div className="flex flex-col md:px-[300px] md:py-[50px] px-[50px] mt-[50px] h-[80vh]">
+      <div className="flex flex-col pl-[400px] pr-[250px] py-[50px] mt-[50px]">
         <div className="flex justify-between space-x-2 py-4">
           <p className="font-bold text-lg ">Category List</p>
 

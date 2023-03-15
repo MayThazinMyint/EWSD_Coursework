@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import Cookies from "js-cookie";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { ConnectedFocusError } from "focus-formik-error";
-import { login } from "../features/user/userSlice";
-import Label from "../components/Label";
-
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { ConnectedFocusError } from 'focus-formik-error';
+import { login } from '../features/auth/authSlice';
+import Label from '../components/Label';
+import ErrorServer from '../components/ErrorServer';
 const Login = () => {
-  const [errorServer, setErrorServer] = useState("");
+  const [errorServer, setErrorServer] = useState('');
+  const auth = useSelector((state) => state.auth);
+  console.log('auth', auth.isAuthenticated);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // initial values
   const initialValues = {
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   };
   // validations
   const validationSchema = Yup.object({
-    email: Yup.string().required("Email is required."),
-    password: Yup.string().required("Password is required."),
+    email: Yup.string().required('Email is required.'),
+    password: Yup.string().required('Password is required.'),
   });
   // for preventing on enter key formik
   const onKeyDown = (keyEvent) => {
@@ -30,18 +32,27 @@ const Login = () => {
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
-    console.log("login data", data);
+    //console.log('login data', data);
     resetForm();
     //dispatch(login(data));
     //navigate("/admin/user-list");
     dispatch(login(data)).then((res) => {
-     
-      console.log("res login", res.payload.data);
-      Cookies.set("token", res.payload.data.token, { expires: 1 });
-      if(res.payload.data.user.user_role_id === 3){
-        navigate('/');
+       setErrorServer('');
+      if (res.payload) {
+       
+        console.log('error server',errorServer);
+        console.log('res login', res);
+        Cookies.set('isAuthenticated', 'true');
+        Cookies.set('userRole', res.payload.data.user.user_role_id);
+        Cookies.set('token', res.payload.data.token);
+        if (res.payload.data.user.user_role_id === 4) {
+          navigate('/');
+        } else {
+          navigate('/admin/dashboard');
+        }
       } else {
-        navigate('/admin/user-list');
+        console.log('show error');
+        setErrorServer('Email or Passowrd is incorrect');
       }
     });
   };
@@ -62,7 +73,7 @@ const Login = () => {
               Fill email and password
             </h1>
             <Formik
-              enableReinitialize
+              
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
@@ -78,6 +89,7 @@ const Login = () => {
                         type="email"
                         name="email"
                         placeholder="Enter email"
+                       
                         className={`  w-[250px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg  block  p-2.5   ${
                           formik.errors.email && formik.touched.email
                             ? 'border border-red-500 '
@@ -95,6 +107,7 @@ const Login = () => {
                         type="password"
                         name="password"
                         placeholder="Enter password"
+                       
                         className={` bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg w-[250px] block p-2.5   ${
                           formik.errors.password && formik.touched.password
                             ? 'border border-red-500 '
@@ -108,12 +121,13 @@ const Login = () => {
                     </div>
                     <div className="text-center pt-4">
                       <button
-                        className="w-[100px] text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                        className="w-[100px] mb-4 text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                         type="submit"
                       >
                         Login
                       </button>
-                      {/* <ErrorServer msg={errorServer} /> */}
+                      
+                      <ErrorServer msg={errorServer} />
                     </div>
                   </div>
                 </Form>

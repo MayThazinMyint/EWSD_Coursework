@@ -3,29 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Cookies from 'js-cookie';
+import Sidebar from '../../../components/sidebar/Sidebar'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { ConnectedFocusError } from 'focus-formik-error';
 import { addUser } from '../../../features/user/userSlice';
 import ErrorServer from '../../../components/ErrorServer';
 import Label from '../../../components/Label';
-import department from '../../../constant/department';
 import role from '../../../constant/role';
 import { fetchDepartments } from '../../../features/department/departmentSlice';
 
 const RegisterUser = () => {
   const [errorServer, setErrorServer] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const departmentList = useSelector((state) => state.department);
-  console.log('role',role)
+  console.log('role', role);
 
   useEffect(() => {
     dispatch(fetchDepartments());
   }, [dispatch]);
-  console.log('departmentList', departmentList);
+  
   // initial values
   const initialValues = {
     user_name: '',
@@ -46,7 +44,6 @@ const RegisterUser = () => {
     password: Yup.string().required('Password is required.'),
     department_id: Yup.string().required('Department is required.'),
     user_role_id: Yup.string().required('Role is required.'),
-
     user_code: Yup.string().required('User code is required.'),
     address: Yup.string().required('Address is required.'),
   });
@@ -58,14 +55,24 @@ const RegisterUser = () => {
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
-    console.log('regiser data', data);
+    console.log('register data', data);
     resetForm();
-    dispatch(addUser(data));
-    navigate('/admin/user-list');
+    dispatch(addUser(data)).then((res) => {
+      
+      if (res.payload) {
+        navigate('/admin/user-list');
+      } else {
+        console.log('show error');
+        setErrorServer('This email is already used.');
+      }
+    });
+
   };
   return (
-    <section className=" dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center  md:mx-auto md:h-screen ">
+    <div className="flex">
+      <Sidebar />
+
+      <div className="dark:bg-gray-900 flex flex-col items-center justify-center md:pl-[500px] md:py-[50px] px-[50px] mt-[50px] h-[80vh]">
         <div
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -267,7 +274,7 @@ const RegisterUser = () => {
                                 className="text-gray-900"
                                 value={data.department_id}
                                 label={data.department_description}
-                                key={data}
+                                key={data.department_id}
                               />
                             ))}
                         </Field>
@@ -288,7 +295,7 @@ const RegisterUser = () => {
                       >
                         Submit
                       </button>
-                      {/* <ErrorServer msg={errorServer} /> */}
+                      <ErrorServer msg={errorServer} />
                     </div>
                   </Form>
                 )}
@@ -297,7 +304,7 @@ const RegisterUser = () => {
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 
