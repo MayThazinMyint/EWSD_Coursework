@@ -8,7 +8,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use DB;
 use App\Helpers\EmailHelper;
-
+use App\Models\Ideas;
+use App\Models\UserRole;
 
 class CommentController extends Controller
 {
@@ -58,13 +59,16 @@ class CommentController extends Controller
             $data = $comment;
             $message = "SUCCESS";
             $responseCode = 200;
-
-            EmailHelper::sendEmail(
-                $name = "Manager", // todo here change name
-                $subject = "$commenter->user_name commented to idea $request->idea_id",
-                $receiptEmail = "vanzar2017@gmail.com", // todo here change email
-                $description = "$commenter->user_name commented to idea $request->idea_id, \n'$request->comment_description'"
-            );
+            $idea = Ideas::where('idea_id', $request->idea_id)->get()->first();
+            $ideaOwners = User::where('id', $idea->user_id)->get();
+            foreach ($ideaOwners as $owner) {
+                EmailHelper::sendEmail(
+                    $name = "$owner->user_name", // todo here change name
+                    $subject = "$commenter->user_name commented to your idea post",
+                    $receiptEmail = $owner->email, // todo here change email
+                    $description = "$commenter->user_name commented to your idea, \n'$request->comment_description'"
+                );
+            }
         } catch (\Throwable $th) {
 
             $data = "UNEXPECTED_ERROR";

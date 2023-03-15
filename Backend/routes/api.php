@@ -8,6 +8,8 @@ use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\IdeasController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -32,6 +34,12 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('category_add', [CategoryController::class, 'store']);
     Route::post('category_delete/{id}', [CategoryController::class, 'destroy']);
 
+    //Comment
+    Route::get('comment/{idea_id}', [CommentController::class, 'index']);
+    Route::post('comment/add', [CommentController::class, 'store']);
+    Route::post('comment/delete/{id}', [CommentController::class, 'destroy']);
+    Route::post('comment/update/{id}', [CommentController::class, 'update']);
+
     //Idea
     Route::get('ideas', [IdeasController::class, 'index']);
     Route::get('ideas/{id}', [IdeasController::class, 'index']);
@@ -43,3 +51,6 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('academic_year/add', [AcademicYearController::class, 'store']);
     Route::post('academic_year/{id}', [AcademicYearController::class, 'destroy']);
 });
+
+// department delete >> http://localhost:8000/api/department_delete/{department_id_to_delete}
+Route::delete('department_delete/{id}', [DepartmentsController::class, 'destroy']);
