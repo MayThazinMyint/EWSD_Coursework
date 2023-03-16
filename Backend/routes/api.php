@@ -6,8 +6,6 @@ use App\Http\Controllers\dummyAPI;
 use App\Http\Controllers\AuthController;
 use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
-use App\Http\Controllers\AcademicYearController;
-use App\Http\Controllers\IdeasController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
 
@@ -43,14 +41,25 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     //Comment    
     Route::get('comment/{idea_id}', [CommentController::class, 'index']);
-    Route::get('comment/add', [CommentController::class, 'store']); 
+    Route::get('comment/add', [CommentController::class, 'store']);
     Route::post('comment/delete/{id}', [CommentController::class, 'destroy']);
     Route::post('comment/update/{id}', [CommentController::class, 'update']);
-    
+
     //Academic
     Route::get('academic_years', [AcademicYearController::class, 'index']);
     Route::post('academic_year/add', [AcademicYearController::class, 'store']);
     Route::post('academic_year/{id}', [AcademicYearController::class, 'destroy']);
 });
 
- Route::get('users', [UserController::class, 'index']);
+
+// //Department
+// Route::get('department_list', [DepartmentsController::class, 'index']);
+// Route::post('department_add', [DepartmentsController::class, 'store']);
+
+// // department update >> http://localhost:8000/api/department_update/{department_id_to_update}
+// // request body >> {"department_code": "Testing2","department_description": "Testing2"}
+// Route::post('department_update/{id}', [DepartmentsController::class, 'update']);
+
+// // department delete >> http://localhost:8000/api/department_delete/{department_id_to_delete}
+// Route::delete('department_delete/{id}', [DepartmentsController::class, 'destroy']);
+// Route::get('users', [UserController::class, 'index']);
