@@ -8,6 +8,9 @@ use Routes\config\auth;
 use App\Http\Controllers\DepartmentsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\IdeasController;
+use App\Http\Controllers\VotingController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -49,6 +52,9 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('academic_years', [AcademicYearController::class, 'index']);
     Route::post('academic_year/add', [AcademicYearController::class, 'store']);
     Route::post('academic_year/{id}', [AcademicYearController::class, 'destroy']);
+
+    //Voting
+    Route::post('voting', [VotingController::class, 'vote']);
 });
 
 
