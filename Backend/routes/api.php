@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ideas/{id}', [IdeasController::class, 'index']);
     Route::post('ideas/add', [IdeasController::class, 'store']);
     Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
+    Route::get('ideas_list/{getBy}', [IdeasController::class, 'listGetBy']);
 
     //Academic
     Route::get('academic_years', [AcademicYearController::class, 'index']);
