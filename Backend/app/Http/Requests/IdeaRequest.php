@@ -31,6 +31,9 @@ class IdeaRequest extends FormRequest
                 'is_anonymous' => 'required|boolean',
                 'attachment' => 'image|mimes:jpg,png,jpeg,gif,svg'
             ];
-        } 
+        } else {
+            return [];
+        }
+
     }
 }

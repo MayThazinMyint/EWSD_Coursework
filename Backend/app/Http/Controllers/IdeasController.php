@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Ideas;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\AcademicYear;
 use App\Http\Requests\IdeaRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class IdeasController extends Controller
 {
@@ -30,8 +33,8 @@ class IdeasController extends Controller
 
         foreach ($ideas as $idea) {
             if (!empty($idea->file_path)) {
-                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $idea->file_path);
-                $data = $data . $idea->file_path;
+                $academicYearCode = AcademicYear::where('academic_id', $idea->academic_id)->value('academic_year_code');
+                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);            
             }
             
         }
@@ -42,6 +45,51 @@ class IdeasController extends Controller
         ], 200);
     }
 
+    public function listGetBy(IdeaRequest $request)
+    {
+        $data = '';
+
+        $getBy = $request->getBy;
+
+        switch ($getBy) {
+            case 'popular':
+                //$ideas = DB::select('select * from ideas')->simplePaginate(5);
+                break;
+            case 'latest':
+                $ideas = Ideas::with('user', 'category')->orderByDesc('created_date')->simplePaginate(5);
+                break;
+            case 'byDepartment':
+                $ideas = Ideas::addSelect([
+                    'user_id' => User::select('department_id')
+                    ->whereColumn('department_id', 'ideas.user_id')
+                ])->get();
+                break;
+            default:
+                $ideas = Ideas::with('user', 'category')->simplePaginate(5);
+                break;
+        }
+
+        if (is_null($ideas)) {
+            return response()->json([
+                'data' => $getBy,
+                'message' => "NOT_FOUND"
+            ], 404);
+        }
+
+        foreach ($ideas as $idea) {
+            if (!empty($idea->file_path)) {
+                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $idea->file_path);
+                $data = $data . $idea->file_path;
+            }
+        }
+        // Return Json Response
+        return response()->json([
+            'data' => $ideas,
+            'message' => "SUCCESS"
+        ], 200);
+    }
+
+
     public function store(IdeaRequest $request)
     {
         $data = "";
@@ -49,24 +97,22 @@ class IdeasController extends Controller
         $responseCode = 200;
 
         try {
-            // $data = Category::where([['category_id', $request->category_id], ['is_active', 1]])->category_code;
-            //academicEndDate = Academic::select('select acdemic_edate from academic where academic_id = ?', [1])->pluck('acdemic_edate');
+            if (AcademicYear::where([['academic_id', $request->academic_id], ['is_active', 1]])->count() == 0){
+                $data = "academic year";
+                $message = "NOT_FOUND";
+                $responseCode = 404;
+                goto RETURN_STATEMENT; 
+            }
+            
+            // academicEndDate = AcademicYear::select('select academic_edate from academic where academic_id = ?', [1])->pluck('acdemic_edate');
 
-            // $academicEndDate = Academic::where(['academic_id', $request->academic_id])->value('academic_edate');
-            //$data = $academicEndDate > date('y-m-d h:i:s');
-            // if(!$academicEndDate){
-            //     $data = "academic";
-            //     $message = "NOT_FOUND";
-            //     $responseCode = 404;
-            //     goto RETURN_STATEMENT;
-            // }
-            // elseif ($academicEndDate) {
-
-            // }
-            // acdemic id does not exists
-            //else if date < current date
-            // cant
-            //
+            $academicEndDate = AcademicYear::where('academic_id', $request->academic_id)->value('academic_edate');
+            if($academicEndDate < date('Y-m-d H:i:s')){
+                $data = "dacademic year";
+                $message = "CLOUSRE_DATE_REACH";
+                $responseCode = 405;
+                goto RETURN_STATEMENT;
+            }
 
             if (Category::where([['category_id', $request->category_id], ['is_active', 1]])->count() == 0) {
                 $data = "category";
@@ -85,9 +131,15 @@ class IdeasController extends Controller
             if (!$request->attachment) {
                 $imageName = null;
             } else {
+                $academicYearCode = AcademicYear::where('academic_id', $request->academic_id)->value('academic_year_code');
+
                 $getImage = $request->attachment;
                 $imageName = strtoupper(md5(uniqid(rand(), true))) . '.' . $getImage->extension();
-                $getImage->move('.' . env('POST_ATTACHMENT_PATH'), $imageName);
+                $imagePath = '.' . env('POST_ATTACHMENT_PATH') . '/' . $academicYearCode;
+                if (!File::isDirectory($imagePath)) {
+                    File::makeDirectory(($imagePath), 0777, true, true);
+                }
+                $getImage->move($imagePath, $imageName);
             }
 
             //Add new idea

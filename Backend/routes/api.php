@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ideas/{id}', [IdeasController::class, 'index']);
     Route::post('ideas/add', [IdeasController::class, 'store']);
     Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
+    Route::get('ideas_list/{getBy}', [IdeasController::class, 'listGetBy']);
 
     //Comment    
     Route::get('comment/{idea_id}', [CommentController::class, 'index']);
@@ -56,16 +57,3 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //Voting
     Route::post('voting', [VotingController::class, 'vote']);
 });
-
-
-// //Department
-// Route::get('department_list', [DepartmentsController::class, 'index']);
-// Route::post('department_add', [DepartmentsController::class, 'store']);
-
-// // department update >> http://localhost:8000/api/department_update/{department_id_to_update}
-// // request body >> {"department_code": "Testing2","department_description": "Testing2"}
-// Route::post('department_update/{id}', [DepartmentsController::class, 'update']);
-
-// // department delete >> http://localhost:8000/api/department_delete/{department_id_to_delete}
-// Route::delete('department_delete/{id}', [DepartmentsController::class, 'destroy']);
-// Route::get('users', [UserController::class, 'index']);
