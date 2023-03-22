@@ -29,7 +29,7 @@ class IdeaRequest extends FormRequest
                 'category_id' => 'required|integer',
                 'user_id' => 'required|integer',
                 'is_anonymous' => 'required|boolean',
-                'attachment' => 'image|mimes:jpg,png,jpeg,gif,svg'
+                'attachment' => 'mimes:jpg,png,jpeg,gif,svg,pdf,docx'
             ];
         } else {
             return [];
