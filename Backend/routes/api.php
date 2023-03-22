@@ -60,3 +60,4 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //Report
     Route::post('report/idea', [IdeasController::class, 'ideaReport']);
 });
+Route::get('/download/idea', [IdeasController::class, 'downloadIdeaCsv']);
