@@ -9,34 +9,33 @@ use App\Models\AcademicYear;
 use App\Http\Requests\IdeaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
 
 class IdeasController extends Controller
 {
     public function index($id = "")
     {
         $data = '';
-        if (!empty($id)){
+        if (!empty($id)) {
             //Get By id
             $ideas = Ideas::find($id);
-        }
-        else{
+        } else {
             //Get all idea list
             $ideas = Ideas::with('user', 'category')->simplePaginate(5);
         }
-        
-        if(is_null($ideas)){
+
+        if (is_null($ideas)) {
             return response()->json([
                 'data' => $id,
                 'message' => "NOT_FOUND"
             ], 404);
-        }       
+        }
 
         foreach ($ideas as $idea) {
             if (!empty($idea->file_path)) {
                 $academicYearCode = AcademicYear::where('academic_id', $idea->academic_id)->value('academic_year_code');
-                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);            
+                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);
             }
-            
         }
         // Return Json Response
         return response()->json([
@@ -61,7 +60,7 @@ class IdeasController extends Controller
             case 'byDepartment':
                 $ideas = Ideas::addSelect([
                     'user_id' => User::select('department_id')
-                    ->whereColumn('department_id', 'ideas.user_id')
+                        ->whereColumn('department_id', 'ideas.user_id')
                 ])->get();
                 break;
             default:
@@ -97,17 +96,17 @@ class IdeasController extends Controller
         $responseCode = 200;
 
         try {
-            if (AcademicYear::where([['academic_id', $request->academic_id], ['is_active', 1]])->count() == 0){
+            if (AcademicYear::where([['academic_id', $request->academic_id], ['is_active', 1]])->count() == 0) {
                 $data = "academic year";
                 $message = "NOT_FOUND";
                 $responseCode = 404;
-                goto RETURN_STATEMENT; 
+                goto RETURN_STATEMENT;
             }
-            
+
             // academicEndDate = AcademicYear::select('select academic_edate from academic where academic_id = ?', [1])->pluck('acdemic_edate');
 
             $academicEndDate = AcademicYear::where('academic_id', $request->academic_id)->value('academic_edate');
-            if($academicEndDate < date('Y-m-d H:i:s')){
+            if ($academicEndDate < date('Y-m-d H:i:s')) {
                 $data = "dacademic year";
                 $message = "CLOUSRE_DATE_REACH";
                 $responseCode = 405;
@@ -185,7 +184,7 @@ class IdeasController extends Controller
                 $message = "NOT_FOUND";
                 $responseCode = 404;
                 goto RETURN_STATEMENT;
-            } 
+            }
             if (Category::where([['category_id', $request->category_id], ['is_active', 1]])->count() == 0) {
                 $data = "category";
                 $message = "NOT_FOUND";
@@ -198,7 +197,7 @@ class IdeasController extends Controller
                 $responseCode = 404;
                 goto RETURN_STATEMENT;
             }
-            
+
             $ideas->idea_description = $request->idea_description;
             $ideas->category_id = $request->category_id;
             $ideas->user_id = $request->user_id;
@@ -217,7 +216,6 @@ class IdeasController extends Controller
 
             // Update Idea 
             $ideas->save();
-
         } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
             $message = $th->getMessage();
@@ -225,6 +223,33 @@ class IdeasController extends Controller
         }
 
         RETURN_STATEMENT:
+        return response()->json([
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
+    }
+
+    public function ideaReport(Request $request)
+    {
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+        try {
+            $para_has_comment = $request->has_comment;
+            $para_is_anonymous = $request->is_anonymous;
+            $para_category_id = $request->category_id;
+            $para_department_id = $request->department_id;
+            $para_academic_year = $request->academic_year;
+            $para_show_all = $request->show_all;
+            $data = DB::select(
+                'CALL sp_idea_rpt(?, ?, ?, ?, ?, ?)',
+                [$para_has_comment, $para_is_anonymous, $para_category_id, $para_department_id, $para_academic_year, $para_show_all]
+            );
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
         return response()->json([
             'data' => $data,
             'message' => $message
