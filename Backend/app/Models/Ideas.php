@@ -45,25 +45,4 @@ class Ideas extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
-
-    // public function academic()
-    // {
-    //     return $this->belongsTo(Academic::class, 'academic_id');
-    // }
-
-    
-
-    // public function publisher()
-    // {
-    //     return $this->belongsTo(Publisher::class)
-    //         ->withDefault([
-    //             'identifier' => 'WITHOUT ID',
-    //             'fname' => 'NOT FOUND',
-    //             'lname' => 'NOT FOUND',
-    //         ]);
-    // }
-
-
-
-
 }
