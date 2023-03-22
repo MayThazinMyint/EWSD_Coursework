@@ -10,6 +10,7 @@ use App\Http\Requests\IdeaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use App\Helpers\EmailHelper;
 
 class IdeasController extends Controller
 {
@@ -33,6 +34,12 @@ class IdeasController extends Controller
         . " group by ideas.idea_id"
         . " %s"
         . " %s";
+
+    private $queryGetQACoordinator = "select QA.user_name as qa_name, QA.email as qa_email, poster.user_name as post_by" 
+        . " from users QA"
+        . " inner join users poster on QA.department_id = poster.department_id"
+        . " where QA.user_role_id = 3"
+        . " and poster.id = %d";
 
     private $limit5 = " limit 0,5";
     private $orderByLikedCount = " order by liked_count desc";
@@ -208,9 +215,25 @@ class IdeasController extends Controller
                 'is_anonymous' => $request->is_anonymous,
                 'file_path' => $imageName,
                 'created_date' => date('Y-m-d H:i:s')
-
             ]);
 
+            $queryQA = sprintf($this->queryGetQACoordinator, $request->user_id);
+            $usersQA = DB::select($queryQA);
+            
+            try {
+                foreach ($usersQA as $user) {
+                    EmailHelper::sendEmail(
+                        $name = "$user->qa_name",
+                        $subject = "[EWSD Group-1][New Idea] $user->post_by posted an idea.",
+                        $receiptEmail = $user->qa_email,
+                        $description = "$user->post_by posted following new idea. \n'$request->idea_description'"
+                    );
+                }
+
+            } catch (\Throwable $th) {
+                //Skip email sending if occurred an error during email sending.
+            }
+            
             $data = $ideas->idea_id;
             $message = "SUCCESS";
             $responseCode = 200;
