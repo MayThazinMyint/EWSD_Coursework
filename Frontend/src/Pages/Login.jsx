@@ -44,10 +44,11 @@ const Login = () => {
         console.log('res login', res);
         Cookies.set('isAuthenticated', 'true');
         Cookies.set('userRole', res.payload.data.user.user_role_id);
+        Cookies.set('userId', res.payload.data.user.id);
         Cookies.set('token', res.payload.data.token);
         if (res.payload.data.user.user_role_id === 4) {
           navigate('/');
-        } else {
+        } else if (res.payload.data.user.user_role_id === 1){
           navigate('/admin/dashboard');
         }
       } else {

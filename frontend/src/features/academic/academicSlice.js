@@ -26,28 +26,63 @@ export const fetchAcademicYear = createAsyncThunk('category/fetchAcademicYear', 
 //     .then((response) => response.data);
 // });
 
-// export const postCategory = createAsyncThunk('department/postCategory', (data) => {
-//   console.log('post category', data);
-//   const token = Cookies.get('token'); // get the token from localStorage
-//   const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
-//   return axios
-//     .post('http://127.0.0.1:8000/api/category_add', data, { headers })
-//     .then((response) => response.data);
-// });
+export const postAcademicYear = createAsyncThunk('department/postAcademicYear', async (data) => {
+  console.log('post academic year', data);
+  const token = Cookies.get('token'); 
+  axios({
+    method: 'post',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+    },
+    url: 'http://127.0.0.1:8000/api/academic_year/add',
+    withCredentials: false,
+    data: data,
+  }).then(function (response) {
+    console.log(response);
+  });
+});
 
-// export const postDepartment = createAsyncThunk(
-//   "department/postDepartment",
+export const deleteAcademicYear = createAsyncThunk('department/deleteAcademicYear', async (id) => {
+  console.log('delete academic year', id);
+  const token = Cookies.get('token'); // get the token from cookies
+  axios({
+    method: 'post',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      Authorization: 'Bearer ' + token,
+      'Content-Type': 'application/json',
+    },
+    url: `http://127.0.0.1:8000/api/academic_year/${id}`,
+    withCredentials: false,
+  }).then(function (response) {
+    console.log(response);
+  });
+});
+
+// export const postAcademicYear = createAsyncThunk(
+//   'department/postAcademicYear',
 //   async (data, thunkAPI) => {
 //     try {
-//       const response = await axios.post(
-//         "http://127.0.0.1:8000/api/department/add",
-//         data
+//       const token = Cookies.get('token'); // get the token from cookies
+//       //headers: {"Access-Control-Allow-Origin": "*"}
+//       const config = {
+//         headers: {
+//           'Access-Control-Allow-Origin': '*',
+//           Authorization: 'Bearer ' + token,
+//           'Content-Type': 'application/json',
+//         },
+//       };
+//       const headers = { Authorization: `Bearer ${token}`, 'Access-Control-Allow-Origin': '*' }; // set the Authorization header with the token
+//       const response = await axios.post('http://127.0.0.1:8000/academic_year/add', data,
+//         config,
 //       );
 //       return response.data;
 //     } catch (error) {
 //       return thunkAPI.rejectWithValue(error.response.data);
 //     }
-//   }
+//   },
 // );
 
 const academicSlice = createSlice({
@@ -67,28 +102,28 @@ const academicSlice = createSlice({
       state.academicYear = [];
       state.error = action.error.message;
     });
-    // builder.addCase(postCategory.pending, (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    //   state.data = null;
-    // });
-    // builder.addCase(postCategory.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.error = null;
-    //   state.data = action.payload;
-    // });
-    // builder.addCase(postCategory.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    //   state.data = null;
-    // });
-    // builder.addCase(deleteCategory.fulfilled, (state, action) => {
-    //   state.loading = false;
-    // });
-    // builder.addCase(deleteCategory.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.error.message;
-    // });
+    builder.addCase(postAcademicYear.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.data = null;
+    });
+    builder.addCase(postAcademicYear.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.data = action.payload;
+    });
+    builder.addCase(postAcademicYear.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.data = null;
+    });
+    builder.addCase(deleteAcademicYear.fulfilled, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(deleteAcademicYear.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
   },
 });
 

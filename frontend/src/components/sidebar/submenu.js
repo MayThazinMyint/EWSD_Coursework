@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import Cookies from 'js-cookie';
 import { logout } from '../../features/auth/authSlice';
 
 const SidebarLink = styled(Link)`
@@ -46,39 +46,32 @@ const DropdownLink = styled(Link)`
   }
 `;
 
-
 const Submenu = ({ item }) => {
-  const [subnav, setSubnav] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const showSubnav = () => setSubnav(!subnav);
-  
-  const handleClick = (item) => {
-    console.log('item', item);
+  const handleLogout = (item) => {
+    console.log('clicked');
     if (item.title === 'Logout') {
-      console.log('logout');
-      Cookies.set('isAuthenticated', '', { expires: 1 });
-      Cookies.set('userRole', '', { expires: 1 });
+        console.log('Logout clicked');
+        Cookies.set('isAuthenticated', false);
+        Cookies.set('token', null);
+        Cookies.set('userRole', null);
+        Cookies.set('userId', null);
       dispatch(logout());
       navigate('/');
-      
     }
   };
-  
+  const [subnav, setSubnav] = useState(false);
+
+  const showSubnav = () => setSubnav(!subnav);
   return (
-    <>
-      <div onClick={() => handleClick(item)}>
-        <SidebarLink onClick={item.subNav && showSubnav} to={item.path}>
-          {item.icon}
-          {item.src && <img className="w-[150px]" src={item.src} alt="logo" />}
-          <SidebarLabel>{item.title} </SidebarLabel>
+    <div onClick={() => handleLogout(item)}>
+      <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
+        {item.icon}
+        <SidebarLabel>{item.title} </SidebarLabel>
 
-          <div>
-            {item.subNav && subnav ? item.iconOpened : item.subNav ? item.iconClosed : null}
-          </div>
-        </SidebarLink>
-      </div>
-
+        <div>{item.subNav && subnav ? item.iconOpened : item.subNav ? item.iconClosed : null}</div>
+      </SidebarLink>
       {subnav &&
         item.subNav.map((item, index) => {
           return (
@@ -88,7 +81,7 @@ const Submenu = ({ item }) => {
             </DropdownLink>
           );
         })}
-    </>
+    </div>
   );
 };
 

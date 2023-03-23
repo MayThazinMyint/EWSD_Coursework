@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './Pages/Home';
 import './App.css';
-import Navbar from './components/common/Navbar';
 import PrivateRoute from './Pages/routes/PrivateRoute';
 import Error from './Pages/routes/Error';
 import RegisterUser from './Pages/admin/users/RegisterUser';
@@ -23,6 +22,8 @@ import Contact from './Pages/Contact';
 import AcademicYear from './Pages/admin/academic/AcademicYear';
 import Dashboard from './Pages/admin/dashboard/Dashobard'
 import Unauthorized from './Pages/routes/Unauthorized';
+import IdeaSummary from './Pages/admin/report/IdeaSummary';
+import AnonymousCommentReport from './Pages/admin/report/AnonymousCommentReport';
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -34,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/idea/all" element={<IdeaList />} />
-        <Route path="/idea/details" element={<Idea />} />
+        <Route path="/idea/:id" element={<Idea />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
@@ -46,6 +47,23 @@ function App() {
           element={
             <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/idea-report"
+          element={
+            <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
+              <IdeaSummary />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="admin/dashboard/anonymous-comment-report"
+          element={
+            <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
+              <AnonymousCommentReport />
             </PrivateRoute>
           }
         />
@@ -99,7 +117,7 @@ function App() {
         />
         {/* Protected admin routes */}
         {/* Protected routes */}
-        <Route path="/idea/add" element={<CreateIdea />} />]
+        <Route path="/idea/add" element={<CreateIdea />} />
         <Route path="/user/profile" element={<Profile />} />
         <Route path="/user/ideas" element={<Ideas />} />
         {/* Protected routes */}

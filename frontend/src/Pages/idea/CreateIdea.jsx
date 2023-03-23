@@ -1,29 +1,37 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { ConnectedFocusError } from "focus-formik-error";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { ConnectedFocusError } from 'focus-formik-error';
 import { FcIdea } from 'react-icons/fc';
-
-import Label from "../../components/Label";
-import department from "../../constant/department";
-import role from "../../constant/role";
+import { useSelector, useDispatch } from 'react-redux';
+import Label from '../../components/Label';
+import { fetchCategories } from '../../features/category/categorySlice';
+import { postIdea } from '../../features/idea/ideaSlice';
 const CreateIdea = () => {
-  const [errorServer, setErrorServer] = useState("");
-  //const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.auth);
+  const categoryList = useSelector((state) => state.category);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
   // initial values
+  // to add department id
   const initialValues = {
     idea_description: '',
+    attachment: '',
     category_id: '',
-    user_id: '', 
-    is_anonymous: '',
-    academic_id: '',
+    user_id: 1,
+    is_anonymous: 0,
+    academic_id: 1,
+    
   };
   // validations
   const validationSchema = Yup.object({
-    idea_description: Yup.string().required('idea_description is required.'),
-    category_id: Yup.string().required('category_id is required.'),
+    idea_description: Yup.string().required('Idea description is required.'),
+    category_id: Yup.string().required('Category is required.'),
+    // terms: Yup.boolean().oneOf([true], 'You must accept the terms and conditions'),
   });
   // for preventing on enter key formik
   const onKeyDown = (keyEvent) => {
@@ -33,13 +41,27 @@ const CreateIdea = () => {
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
-    console.log("data", data);
+    let myForm = document.getElementById('myForm');
+    let newFormData = new FormData(myForm);
+
+    console.log('data', data);
+    newFormData.append('user_id', data.user_id);
+    newFormData.append('attachment', data.attachment);
+    newFormData.append('is_anonymous', data.is_anonymous === true? 1: 0);
+    newFormData.append('academic_id', initialValues.academic_id);
+    console.log('newFormData', newFormData);
+
+    dispatch(postIdea(newFormData));
     resetForm();
-    navigate("/admin/user-list");
+    navigate("/idea/all");
   };
+  if (categoryList.loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <section className=" bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-[80vh] lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex">
@@ -55,9 +77,16 @@ const CreateIdea = () => {
               onSubmit={onSubmit}
             >
               {(formik) => (
-                <Form className="space-y-2 " onKeyDown={onKeyDown}>
+                <Form id="myForm" className="space-y-2 " onKeyDown={onKeyDown}>
                   <ConnectedFocusError />
-
+                  <Label text="Upload Documents" required="*" hint="" />
+                  <input
+                    type="file"
+                    className="py-2 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5 "
+                    onChange={(event) => {
+                      formik.setFieldValue('attachment', event.target.files[0]);
+                    }}
+                  />
                   <Label text="Idea Description" required="*" hint="" />
                   <Field
                     as="textarea"
@@ -91,14 +120,44 @@ const CreateIdea = () => {
                     autoComplete="off"
                   >
                     <option value="" label="Please select Category" />
-                    {department.map((data) => (
-                      <option className="text-gray-900" value={data} label={data} key={data} />
-                    ))}
+                    {!categoryList.loading &&
+                      categoryList.categories.data.map((data) => (
+                        <option
+                          className="text-gray-900"
+                          value={data.category_id}
+                          label={data.category_type}
+                          key={data.category_id}
+                        />
+                      ))}
                   </Field>
                   <div className="validate-show">
                     <ErrorMessage name="category_id" component="div" className="text-red-600" />
                   </div>
-
+                  <label className="flex gap-2 pt-2">
+                    <Field
+                      type="checkbox"
+                      name="is_anonymous"
+                      className={`bg-gray-50 border border-gray-300  sm:text-sm rounded-lg   p-2.5  ${
+                        formik.errors.is_anonymous && formik.touched.is_anonymous
+                          ? 'border border-red-500'
+                          : ''
+                      }`}
+                    />
+                    Do you want to post anonymously?
+                  </label>
+                  <label className="flex gap-2 pt-2">
+                    <Field
+                      type="checkbox"
+                      name="terms"
+                      className={`bg-gray-50 border border-gray-300  sm:text-sm rounded-lg   p-2.5  ${
+                        formik.errors.terms && formik.touched.terms ? 'border border-red-500' : ''
+                      }`}
+                    />
+                    I accept the terms and conditions
+                  </label>
+                  <div className="validate-show">
+                    <ErrorMessage name="terms" component="div" className="text-red-600" />
+                  </div>
                   <div className="text-center pt-4">
                     <button
                       className="w-[25%] text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -116,84 +175,7 @@ const CreateIdea = () => {
       </div>
     </section>
 
-    // <section class="bg-gray-50 dark:bg-gray-900">
-    //   <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-    //     <a
-    //       href="#"
-    //       class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-    //     >
-    //       <img
-    //         class="w-8 h-8 mr-2"
-    //         src="https://cdn-icons-png.flaticon.com/512/3631/3631618.png"
-    //         alt="logo"
-    //       />
-    //       Register User
-    //     </a>
-    //     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-    //       <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-    //         <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-    //           Fill the below information to create user account
-    //         </h1>
-    //         <form class="space-y-4 md:space-y-6" action="#">
-    //           <div>
-    //             <label
-    //               for="email"
-    //               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-    //             >
-    //               Enter email
-    //             </label>
-    //             <input
-    //               type="email"
-    //               name="email"
-    //               id="email"
-    //               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    //               placeholder="name@company.com"
-    //               required=""
-    //             />
-    //           </div>
-    //           <div>
-    //             <label
-    //               for="password"
-    //               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-    //             >
-    //               Enter Password
-    //             </label>
-    //             <input
-    //               type="password"
-    //               name="password"
-    //               id="password"
-    //               placeholder="••••••••"
-    //               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    //               required=""
-    //             />
-    //           </div>
-    //           <div>
-    //             <label
-    //               for="password"
-    //               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-    //             >
-    //               Choose Department
-    //             </label>
-    //             <input
-    //               type="text"
-    //               name="department"
-    //               id="password"
-    //               placeholder="••••••••"
-    //               class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-    //               required=""
-    //             />
-    //           </div>
-    //           <button
-    //             type="submit"
-    //             class="w-full text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-    //           >
-    //             Sign in
-    //           </button>
-    //         </form>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </section>
+  
   );
 };
 

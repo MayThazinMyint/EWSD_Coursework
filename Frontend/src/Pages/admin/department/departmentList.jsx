@@ -20,7 +20,7 @@ const DepartmentList = () => {
   useEffect(() => {
     dispatch(fetchDepartments());
   }, [dispatch]);
-  console.log('departmentList', departmentList.departments);
+  console.log('departmentList', departmentList.departments.data);
   if (departmentList.loading) {
     return <p>Loading...</p>;
   }

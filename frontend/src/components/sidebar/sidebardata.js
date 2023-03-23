@@ -1,17 +1,28 @@
-import React from 'react';
-import { RiArrowDownSFill, RiArrowUpSFill } from 'react-icons/ri';
-import { FcIdea } from 'react-icons/fc';
-import { HiUserGroup } from 'react-icons/hi';
-import { AiFillSetting } from 'react-icons/ai';
-import { MdOutlineSystemUpdateAlt, MdReport, MdOutlineLogout } from 'react-icons/md';
-import logo from '../../assets/logo.png';
+import React from "react";
+import {RiArrowDownSFill, RiArrowUpSFill}  from 'react-icons/ri'
+import {FcIdea} from 'react-icons/fc'
+import {HiUserGroup}  from 'react-icons/hi'
+import {AiFillSetting} from 'react-icons/ai'
+import {
+  MdOutlineSystemUpdateAlt,
+  MdReport,
+  MdOutlineLogout,
+  MdOutlineDashboardCustomize,
+} from 'react-icons/md';
+
 
 export const Sidebardata = [
-  { id: '0', title: '', path: '/', icon: '', src: logo },
-
-  { id: '1', title: 'Idea Posts', path: '', icon: <FcIdea /> },
   {
-    id: '2',
+    title: 'Dashboard',
+    path: '/admin/dashboard',
+    icon: <MdOutlineDashboardCustomize />,
+  },
+  {
+    title: 'Idea Posts',
+    path: '',
+    icon: <FcIdea />,
+  },
+  {
     title: 'User Management',
     icon: <HiUserGroup />,
     iconClosed: <RiArrowDownSFill />,
@@ -22,10 +33,13 @@ export const Sidebardata = [
         title: 'Users',
         path: '/admin/user-list',
       },
+      {
+        title: 'User Registeration',
+        path: '/admin/register-user',
+      },
     ],
   },
   {
-    id: '3',
     title: 'Setups',
     icon: <AiFillSetting />,
     iconClosed: <RiArrowDownSFill />,
@@ -42,14 +56,13 @@ export const Sidebardata = [
     ],
   },
   {
-    id: '4',
     title: 'System Management',
     icon: <MdOutlineSystemUpdateAlt />,
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
     subNav: [
       {
-        title: 'Academic Year',
+        title: 'Acadmic Year',
         path: '/admin/academic-year',
       },
       {
@@ -59,21 +72,24 @@ export const Sidebardata = [
     ],
   },
   {
-    id: '5',
     title: 'Reports',
     icon: <MdReport />,
     iconClosed: <RiArrowDownSFill />,
     iconOpened: <RiArrowUpSFill />,
     subNav: [
       {
-        title: 'Ideas Summary Report',
-        path: '',
+        title: 'Ideas',
+        path: '/admin/dashboard/idea-report',
       },
       {
-        title: 'Activity Report',
-        path: '',
+        title: 'Anonymous Comment',
+        path: '/admin/dashboard/anonymous-comment-report',
       },
     ],
   },
-  { id: '6', title: 'Logout', path: '', icon: <MdOutlineLogout /> },
+  {
+    title: 'Logout',
+    path: '',
+    icon: <MdOutlineLogout />,
+  },
 ];
