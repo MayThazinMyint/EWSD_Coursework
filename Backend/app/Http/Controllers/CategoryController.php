@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Ideas;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -99,11 +100,18 @@ class CategoryController extends Controller
                 $message = "NOT_FOUND";
                 $responseCode = 404;
             } else {
-                // Update Is_Active to 0 and updated date to current date
-                $category->is_active = 0;
-                $category->updated_date = date('Y-m-d H:i:s');
-                // Update 
-                $category->save();
+                $idea = Ideas::where('category_id', $id)->count();
+                if($idea > 0) {
+                    $data = $id;
+                    $message = "Ideas are posted in this cateogry";
+                    $responseCode = 406;
+                } else {
+                    // Update Is_Active to 0 and updated date to current date
+                    $category->is_active = 0;
+                    $category->updated_date = date('Y-m-d H:i:s');
+                    // Update 
+                    $category->save();
+                }
             }
         } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";

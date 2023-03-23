@@ -10,6 +10,8 @@ use App\Http\Requests\IdeaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use League\Csv\Writer;
+use Illuminate\Support\Facades\Response;
 use App\Helpers\EmailHelper;
 
 class IdeasController extends Controller
@@ -35,7 +37,7 @@ class IdeasController extends Controller
         . " %s"
         . " %s";
 
-    private $queryGetQACoordinator = "select QA.user_name as qa_name, QA.email as qa_email, poster.user_name as post_by" 
+    private $queryGetQACoordinator = "select QA.user_name as qa_name, QA.email as qa_email, poster.user_name as post_by"
         . " from users QA"
         . " inner join users poster on QA.department_id = poster.department_id"
         . " where QA.user_role_id = 3"
@@ -215,11 +217,12 @@ class IdeasController extends Controller
                 'is_anonymous' => $request->is_anonymous,
                 'file_path' => $imageName,
                 'created_date' => date('Y-m-d H:i:s')
+
             ]);
 
             $queryQA = sprintf($this->queryGetQACoordinator, $request->user_id);
             $usersQA = DB::select($queryQA);
-            
+
             try {
                 foreach ($usersQA as $user) {
                     EmailHelper::sendEmail(
@@ -229,11 +232,10 @@ class IdeasController extends Controller
                         $description = "$user->post_by posted following new idea. \n'$request->idea_description'"
                     );
                 }
-
             } catch (\Throwable $th) {
                 //Skip email sending if occurred an error during email sending.
             }
-            
+
             $data = $ideas->idea_id;
             $message = "SUCCESS";
             $responseCode = 200;
@@ -335,5 +337,87 @@ class IdeasController extends Controller
             'data' => $data,
             'message' => $message
         ], $responseCode);
+    }
+
+    public function downloadIdeaCsv(Request $request)
+    {
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+        try {
+            // $ideas = Ideas::where("academic_yr", $academic_yr)->get()->toArray();
+            // $ideas = Ideas::all()->toArray();
+            $academicYear = AcademicYear::find($request->query('academic_year'))->academic_year;
+            $para_has_comment = $request->query('has_comment');
+            $para_is_anonymous = $request->query('is_anonymous');
+            $para_category_id = $request->query('category_id');
+            $para_department_id = $request->query('department_id');
+            $para_academic_year = $request->query('academic_year');
+            $para_show_all = $request->show_all;
+            $results = DB::select(
+                'CALL sp_idea_rpt(?, ?, ?, ?, ?, ?)',
+                [$para_has_comment, $para_is_anonymous, $para_category_id, $para_department_id, $para_academic_year, $para_show_all]
+            );
+            $ideas = collect($results)->map(function ($x) {
+                return (array) $x;
+            })->toArray();
+            if (count($ideas) == 0) {
+                $data = "There is no data to download";
+                return response()->json([
+                    'data' => $data,
+                    'message' => $message
+                ], $responseCode);
+            } else {
+                $csv =  Writer::createFromString('');
+                // $csv->insertOne([
+                //     'idea_id',
+                //     'idea_description',
+                //     'category_id',
+                //     'user_id',
+                //     'is_anonymous',
+                //     'file_path',
+                //     'created_date',
+                //     'updated_date',
+                //     'academic_id'
+                // ]);
+
+                $csv->insertOne([
+                    'idea_posted_date',
+                    'idea_description',
+                    'posted_by',
+                    'email',
+                    'category_id',
+                    'category_type',
+                    'department_id',
+                    'department_description',
+                    'academic_id',
+                    'academic_year',
+                    'academic_sdate',
+                    'academic_edate',
+                    'has_comments',
+                    'has_comments_flag',
+                    'is_anonymous',
+                    'comment_cnts',
+                    'anonymous_comment_cnts',
+                    'unique_comment_users'
+                ]);
+
+                foreach ($ideas as $row) {
+                    $csv->insertOne($row);
+                }
+
+                $data = $csv->getContent();
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+        $filename = $academicYear . '_idea_report.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
+        ];
+        return Response::make($data, 200, $headers);
     }
 }

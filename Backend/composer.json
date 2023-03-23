@@ -15,6 +15,7 @@
         "laravel/passport": "^11.6",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "league/csv": "^9.9",
         "php-open-source-saver/jwt-auth": "^2.0"
     },
     "require-dev": {
