@@ -57,3 +57,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //Voting
     Route::post('voting', [VotingController::class, 'vote']);
 });
+// Idea Report 1 downlaod
+Route::get('/download/idea', [IdeasController::class, 'downloadIdeaCsv']);
+
+//download zip file
+Route::get('/download/summary', [ReportController::class, 'download']);
