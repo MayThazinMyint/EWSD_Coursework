@@ -21,7 +21,7 @@ class AcademicYear extends Model
         'updated_date'
     ];
 
-    protected $table = 'academic';
+    protected $table = 'academic_years';
     protected $primaryKey = 'academic_id';
 
     public $timestamps = false;

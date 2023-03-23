@@ -9,34 +9,68 @@ use App\Models\AcademicYear;
 use App\Http\Requests\IdeaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
+use League\Csv\Writer;
+use Illuminate\Support\Facades\Response;
+use App\Helpers\EmailHelper;
 
 class IdeasController extends Controller
 {
+
+    private $queryIdeaInfo = "select ideas.*, count(voting.is_liked) as liked_count, count(voting.is_unliked) as unliked_count, users.department_id"
+        . " from ideas"
+        . " left join voting on ideas.idea_id = voting.idea_id"
+        . " inner join users on ideas.user_id = users.id"
+        . " where users.is_active = 1"
+        . " group by ideas.idea_id"
+        . " %s"
+        . " %s";
+
+
+    private $queryIdeaInfoWithDeptId = "select ideas.*, count(voting.is_liked) as liked_count, count(voting.is_unliked) as unliked_count, users.department_id"
+        . " from ideas"
+        . " left join voting on ideas.idea_id = voting.idea_id"
+        . " inner join users on ideas.user_id = users.id"
+        . " where users.department_id = %d"
+        . " and users.is_active = 1"
+        . " group by ideas.idea_id"
+        . " %s"
+        . " %s";
+
+    private $queryGetQACoordinator = "select QA.user_name as qa_name, QA.email as qa_email, poster.user_name as post_by"
+        . " from users QA"
+        . " inner join users poster on QA.department_id = poster.department_id"
+        . " where QA.user_role_id = 3"
+        . " and poster.id = %d";
+
+    private $limit5 = " limit 0,5";
+    private $orderByLikedCount = " order by liked_count desc";
+    private $orderByCreatedDate = " order by ideas.created_date desc";
+
     public function index($id = "")
     {
         $data = '';
-        if (!empty($id)){
+        if (!empty($id)) {
             //Get By id
             $ideas = Ideas::find($id);
-        }
-        else{
+        } else {
             //Get all idea list
             $ideas = Ideas::with('user', 'category')->simplePaginate(5);
         }
-        
-        if(is_null($ideas)){
+
+        if (is_null($ideas)) {
             return response()->json([
                 'data' => $id,
                 'message' => "NOT_FOUND"
             ], 404);
-        }       
+        }
 
         foreach ($ideas as $idea) {
+            $idea['attachment'] = null;
             if (!empty($idea->file_path)) {
                 $academicYearCode = AcademicYear::where('academic_id', $idea->academic_id)->value('academic_year_code');
-                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);            
+                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);
             }
-            
         }
         // Return Json Response
         return response()->json([
@@ -47,48 +81,80 @@ class IdeasController extends Controller
 
     public function listGetBy(IdeaRequest $request)
     {
-        $data = '';
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+        $queryToSelect = "";
 
-        $getBy = $request->getBy;
+        try {
+            $getBy = $request->getBy;
 
-        switch ($getBy) {
-            case 'popular':
-                //$ideas = DB::select('select * from ideas')->simplePaginate(5);
-                break;
-            case 'latest':
-                $ideas = Ideas::with('user', 'category')->orderByDesc('created_date')->simplePaginate(5);
-                break;
-            case 'byDepartment':
-                $ideas = Ideas::addSelect([
-                    'user_id' => User::select('department_id')
-                    ->whereColumn('department_id', 'ideas.user_id')
-                ])->get();
-                break;
-            default:
-                $ideas = Ideas::with('user', 'category')->simplePaginate(5);
-                break;
-        }
+            switch ($getBy) {
+                    //Get popular ideas
+                case 'popular':
+                    if (!$request->department_id) {
+                        $queryToSelect = sprintf($this->queryIdeaInfo, $this->orderByLikedCount, $this->limit5);
+                    } else {
+                        $queryToSelect = sprintf($this->queryIdeaInfoWithDeptId, $request->department_id, $this->orderByLikedCount, $this->limit5);
+                    }
+                    break;
+                    //Get latest ideas
+                case 'latest':
+                    if (!$request->department_id) {
+                        $queryToSelect = sprintf($this->queryIdeaInfo, $this->orderByCreatedDate, "");
+                    } else {
+                        $queryToSelect = sprintf($this->queryIdeaInfoWithDeptId, $request->department_id, $this->orderByCreatedDate, "");
+                    }
+                    break;
 
-        if (is_null($ideas)) {
-            return response()->json([
-                'data' => $getBy,
-                'message' => "NOT_FOUND"
-            ], 404);
-        }
-
-        foreach ($ideas as $idea) {
-            if (!empty($idea->file_path)) {
-                $idea['attachment'] = asset(env('POST_ATTACHMENT_PATH') . "/" . $idea->file_path);
-                $data = $data . $idea->file_path;
+                    //Get ideas by Department id
+                case 'byDepartment':
+                    if (!$request->department_id) {
+                        $data = "Department_id";
+                        $message = "DEPARTMENT_ID_REQUIRED";
+                        $responseCode = 422;
+                        goto RETURN_STATEMENT;
+                    } else {
+                        $queryToSelect = sprintf($this->queryIdeaInfoWithDeptId, $request->department_id, "", "");
+                    }
+                    break;
+                default:
+                    $data = $getBy;
+                    $message = "NOT_FOUND";
+                    $responseCode = 404;
+                    goto RETURN_STATEMENT;
+                    break;
             }
+
+            $data = DB::select($queryToSelect);
+
+            if (is_null($data)) {
+                $data = $getBy;
+                $message = "NOT_FOUND";
+                $responseCode = 404;
+                goto RETURN_STATEMENT;
+            }
+
+            foreach ($data as $idea) {
+                $idea->attachment = null;
+                if (!empty($idea->file_path)) {
+                    $academicYearCode = AcademicYear::where('academic_id', $idea->academic_id)->value('academic_year_code');
+                    $idea->attachment = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);
+                }
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
         }
+
+        RETURN_STATEMENT:
         // Return Json Response
         return response()->json([
-            'data' => $ideas,
-            'message' => "SUCCESS"
-        ], 200);
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
     }
-
 
     public function store(IdeaRequest $request)
     {
@@ -97,17 +163,17 @@ class IdeasController extends Controller
         $responseCode = 200;
 
         try {
-            if (AcademicYear::where([['academic_id', $request->academic_id], ['is_active', 1]])->count() == 0){
+            if (AcademicYear::where([['academic_id', $request->academic_id], ['is_active', 1]])->count() == 0) {
                 $data = "academic year";
                 $message = "NOT_FOUND";
                 $responseCode = 404;
-                goto RETURN_STATEMENT; 
+                goto RETURN_STATEMENT;
             }
-            
+
             // academicEndDate = AcademicYear::select('select academic_edate from academic where academic_id = ?', [1])->pluck('acdemic_edate');
 
             $academicEndDate = AcademicYear::where('academic_id', $request->academic_id)->value('academic_edate');
-            if($academicEndDate < date('Y-m-d H:i:s')){
+            if ($academicEndDate < date('Y-m-d H:i:s')) {
                 $data = "dacademic year";
                 $message = "CLOUSRE_DATE_REACH";
                 $responseCode = 405;
@@ -154,6 +220,22 @@ class IdeasController extends Controller
 
             ]);
 
+            $queryQA = sprintf($this->queryGetQACoordinator, $request->user_id);
+            $usersQA = DB::select($queryQA);
+
+            try {
+                foreach ($usersQA as $user) {
+                    EmailHelper::sendEmail(
+                        $name = "$user->qa_name",
+                        $subject = "[EWSD Group-1][New Idea] $user->post_by posted an idea.",
+                        $receiptEmail = $user->qa_email,
+                        $description = "$user->post_by posted following new idea. \n'$request->idea_description'"
+                    );
+                }
+            } catch (\Throwable $th) {
+                //Skip email sending if occurred an error during email sending.
+            }
+
             $data = $ideas->idea_id;
             $message = "SUCCESS";
             $responseCode = 200;
@@ -185,7 +267,7 @@ class IdeasController extends Controller
                 $message = "NOT_FOUND";
                 $responseCode = 404;
                 goto RETURN_STATEMENT;
-            } 
+            }
             if (Category::where([['category_id', $request->category_id], ['is_active', 1]])->count() == 0) {
                 $data = "category";
                 $message = "NOT_FOUND";
@@ -198,7 +280,7 @@ class IdeasController extends Controller
                 $responseCode = 404;
                 goto RETURN_STATEMENT;
             }
-            
+
             $ideas->idea_description = $request->idea_description;
             $ideas->category_id = $request->category_id;
             $ideas->user_id = $request->user_id;
@@ -217,7 +299,6 @@ class IdeasController extends Controller
 
             // Update Idea 
             $ideas->save();
-
         } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
             $message = $th->getMessage();
@@ -229,5 +310,114 @@ class IdeasController extends Controller
             'data' => $data,
             'message' => $message
         ], $responseCode);
+    }
+
+    public function ideaReport(Request $request)
+    {
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+        try {
+            $para_has_comment = $request->has_comment;
+            $para_is_anonymous = $request->is_anonymous;
+            $para_category_id = $request->category_id;
+            $para_department_id = $request->department_id;
+            $para_academic_year = $request->academic_year;
+            $para_show_all = $request->show_all;
+            $data = DB::select(
+                'CALL sp_idea_rpt(?, ?, ?, ?, ?, ?)',
+                [$para_has_comment, $para_is_anonymous, $para_category_id, $para_department_id, $para_academic_year, $para_show_all]
+            );
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+        return response()->json([
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
+    }
+
+    public function downloadIdeaCsv(Request $request)
+    {
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+        try {
+            // $ideas = Ideas::where("academic_yr", $academic_yr)->get()->toArray();
+            // $ideas = Ideas::all()->toArray();
+            $academicYear = AcademicYear::find($request->query('academic_year'))->academic_year;
+            $para_has_comment = $request->query('has_comment');
+            $para_is_anonymous = $request->query('is_anonymous');
+            $para_category_id = $request->query('category_id');
+            $para_department_id = $request->query('department_id');
+            $para_academic_year = $request->query('academic_year');
+            $para_show_all = $request->show_all;
+            $results = DB::select(
+                'CALL sp_idea_rpt(?, ?, ?, ?, ?, ?)',
+                [$para_has_comment, $para_is_anonymous, $para_category_id, $para_department_id, $para_academic_year, $para_show_all]
+            );
+            $ideas = collect($results)->map(function ($x) {
+                return (array) $x;
+            })->toArray();
+            if (count($ideas) == 0) {
+                $data = "There is no data to download";
+                return response()->json([
+                    'data' => $data,
+                    'message' => $message
+                ], $responseCode);
+            } else {
+                $csv =  Writer::createFromString('');
+                // $csv->insertOne([
+                //     'idea_id',
+                //     'idea_description',
+                //     'category_id',
+                //     'user_id',
+                //     'is_anonymous',
+                //     'file_path',
+                //     'created_date',
+                //     'updated_date',
+                //     'academic_id'
+                // ]);
+
+                $csv->insertOne([
+                    'idea_posted_date',
+                    'idea_description',
+                    'posted_by',
+                    'email',
+                    'category_id',
+                    'category_type',
+                    'department_id',
+                    'department_description',
+                    'academic_id',
+                    'academic_year',
+                    'academic_sdate',
+                    'academic_edate',
+                    'has_comments',
+                    'has_comments_flag',
+                    'is_anonymous',
+                    'comment_cnts',
+                    'anonymous_comment_cnts',
+                    'unique_comment_users'
+                ]);
+
+                foreach ($ideas as $row) {
+                    $csv->insertOne($row);
+                }
+
+                $data = $csv->getContent();
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+        $filename = $academicYear . '_idea_report.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
+        ];
+        return Response::make($data, 200, $headers);
     }
 }
