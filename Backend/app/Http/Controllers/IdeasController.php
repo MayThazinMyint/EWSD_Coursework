@@ -53,7 +53,7 @@ class IdeasController extends Controller
             $ideas = Ideas::find($id);
         } else {
             //Get all idea list
-            $ideas = Ideas::with('user', 'category')->simplePaginate(5);
+            $ideas = Ideas::with('user', 'category')->get();
         }
 
         if (is_null($ideas)) {
