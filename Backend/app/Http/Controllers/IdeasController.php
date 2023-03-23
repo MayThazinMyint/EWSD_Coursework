@@ -55,7 +55,7 @@ class IdeasController extends Controller
             $ideas = Ideas::find($id);
         } else {
             //Get all idea list
-            $ideas = Ideas::with('user', 'category')->simplePaginate(5);
+            $ideas = Ideas::with('user', 'category')->get();
         }
 
         if (is_null($ideas)) {
@@ -174,7 +174,7 @@ class IdeasController extends Controller
 
             $academicEndDate = AcademicYear::where('academic_id', $request->academic_id)->value('academic_edate');
             if ($academicEndDate < date('Y-m-d H:i:s')) {
-                $data = "dacademic year";
+                $data = "academic year";
                 $message = "CLOUSRE_DATE_REACH";
                 $responseCode = 405;
                 goto RETURN_STATEMENT;
