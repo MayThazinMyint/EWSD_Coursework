@@ -27,9 +27,6 @@ class Ideas extends Model
     protected $primaryKey = 'idea_id';
 
     public $timestamps = false;
-
-    
-
     
     /**
      * Get the user that owns the ideas
@@ -44,5 +41,15 @@ class Ideas extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function academic_years()
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_id');
+    }
+
+    public function department()
+    {
+        return $this->hasOneThrough(Department::class, User::class, "id", "department_id", "user_id", "department_id");
     }
 }
