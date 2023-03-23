@@ -4,12 +4,13 @@ import departmentReducer from "../features/department/departmentSlice";
 import categoryReducer from "../features/category/categorySlice";
 import authReducer from '../features/auth/authSlice';
 import academicReducer from '../features/academic/academicSlice';
+import ideaReducer from '../features/idea/ideaSlice'
 import Cookies from "js-cookie";
 
 const isAuthenticated = Cookies.get('isAuthenticated') === 'true';
 const userRole = Cookies.get('userRole');
-const userId = localStorage.getItem('userId');
-console.log('store isAuthenticated',isAuthenticated, 'userRole',userRole);
+const userId = Cookies.get('userId');
+console.log('store isAuthenticated',isAuthenticated, 'userRole',userRole, 'userId',userId);
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -17,6 +18,7 @@ const store = configureStore({
     department: departmentReducer,
     category: categoryReducer,
     academic: academicReducer,
+    ideas: ideaReducer,
   },
   preloadedState: {
     auth: {

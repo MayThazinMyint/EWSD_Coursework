@@ -15,15 +15,22 @@ const User = () => {
   const user = useSelector((state) => state.user);
   console.log('single user fetch', user.user.data);
   const userId = useParams().id;
-  console.log('userid',userId);
+  console.log('userid', userId);
   const dispatch = useDispatch();
   const departmentList = useSelector((state) => state.department);
-const formRef = useRef(null);
+  const formRef = useRef(null);
+  // Get the userId param from the URL.
+  let { id } = useParams();
+  console.log('id', { id });
+  useEffect(() => {
+    dispatch(fetchSingleUser(id));
+  }, [dispatch, id]);
+
   useEffect(() => {
     dispatch(fetchDepartments());
   }, [dispatch]);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const initialValues = {
     user_name: '' || user.user.data?.user_name,
     user_phone: '' || user.user.data?.user_phone,
@@ -36,7 +43,7 @@ const formRef = useRef(null);
     isActive: 1,
     password: 'password',
   };
- 
+
   // validations
   const validationSchema = Yup.object({
     user_name: Yup.string().required('User name is required.'),
@@ -71,26 +78,19 @@ const formRef = useRef(null);
 
   const handleSubmit = (values) => {
     // do something with form values, such as make an API call to update the user
-    console.log('update',values);
+    console.log('update', values);
     const dataObj = {
       data: values,
-      id: userId
-    }
+      id: userId,
+    };
     dispatch(updateUser(dataObj));
     dispatch(fetchSingleUser(userId));
   };
-  // Get the userId param from the URL.
-  let { id } = useParams();
-  console.log('id', { id });
-  useEffect(() => {
-    dispatch(fetchSingleUser(id));
-  }, [dispatch, id]);
 
   //submit updated data
   const onSubmit = async (data) => {
     console.log('update data', data);
     //dispatch(updateUser(data));
-    
   };
 
   if (user.loading) {
@@ -141,7 +141,6 @@ const formRef = useRef(null);
                       <Label text="Email" required="*" hint="" />
                       <Field
                         formik={formik}
-                        
                         type="email"
                         name="email"
                         placeholder="Enter email"

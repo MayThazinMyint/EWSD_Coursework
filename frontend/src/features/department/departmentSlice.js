@@ -1,6 +1,8 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetchData } from "../../api/api";
 import Cookies from "js-cookie";
+
 const initialState = {
   loading: true,
   department: [],
@@ -16,6 +18,17 @@ export const fetchDepartments = createAsyncThunk(
     return axios.get('http://127.0.0.1:8000/api/departments',{headers}).then((response) => response.data);
   }
 );
+
+// export const fetchDepartments = () =>
+//   createAsyncThunk(`department/fetchDepartments`, async () => {
+//     const data = await fetchData('department');
+//     return data;
+//   });
+
+ export const fetchDepartmentss = createAsyncThunk('department/fetchDepartments',async () => {
+ const data = await fetchData('departments');
+ return data;
+ })
 
 export const deleteDepartment = createAsyncThunk('department/deleteDepartment', (id) => {
   const token = Cookies.get('token');
@@ -36,6 +49,8 @@ export const postDepartment = createAsyncThunk(
       .then((response) => response.data);
   }
 );
+
+
 
 // export const postDepartment = createAsyncThunk(
 //   "department/postDepartment",

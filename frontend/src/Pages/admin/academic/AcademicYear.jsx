@@ -6,40 +6,37 @@ import { ConnectedFocusError } from 'focus-formik-error';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import {
-  fetchAcademicYear,
-  
-} from '../../../features/academic/academicSlice';
+import { fetchAcademicYear, postAcademicYear, deleteAcademicYear } from '../../../features/academic/academicSlice';
 import Label from '../../../components/Label';
 import Sidebar from '../../../components/sidebar/Sidebar';
+import Loading from '../../../components/common/Loading';
 
 const CategoryList = () => {
   const [showModal, setShowModal] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  //const [categoryId, setCategoryId] = useState();
-  //const academicYearList = useSelector((state) => state.academic);
-  //console.log('academic', academicYearList.academicYear.data);
+  const [academicId, setacademicId] = useState();
+  const academicYearList = useSelector((state) => state.academic);
   const handleCancel = () => {
     setShowWarning(false);
   };
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //  // dispatch(fetchAcademicYear());
-  // }, [dispatch]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAcademicYear());
+  }, [dispatch]);
 
-  const handleDeleteClick = (userId) => {
-    // setCategoryId(userId);
-    // setShowWarning(true);
-    console.log('user id', userId);
+  const handleDeleteClick = (id) => {
+    setacademicId(id);
+    setShowWarning(true);
+    console.log('academic id', id);
   };
 
-  // if (academicYearList.loading) {
-  //   return <p>Loading...</p>;
-  // }
+  if (academicYearList.loading) {
+    return <Loading />;
+  }
 
-  // if (academicYearList.error) {
-  //   return <p>There is an error: {academicYearList.error}</p>;
-  // }
+  if (academicYearList.error) {
+    return <p>There is an error: {academicYearList.error}</p>;
+  }
 
   const initialValues = {
     academic_year_code: '',
@@ -49,8 +46,42 @@ const CategoryList = () => {
     final_closure_date: null,
   };
 
-  const handleSubmit = (values) => {
+  const chageDateFormat = (dateInput) => {
+    // Create a new date object from the string
+    const date = new Date(dateInput);
+
+    // Get the year, month, day, hours, minutes, and seconds from the date object
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    // Create the formatted date string
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+    console.log(formattedDate); // Output: "2023-03-22 00:00:00"
+    return formattedDate;
+  }
+
+  const handleSubmit = (values, { resetForm }) => {
     console.log(values);
+    const data = {
+      academic_year_code: values.academic_year_code,
+      academic_year: values.academic_year,
+      academic_sdate: chageDateFormat(values.academic_sdate),
+      academic_edate: chageDateFormat(values.academic_edate),
+      final_closure_date: chageDateFormat(values.final_closure_date),
+    };
+    console.log('format: ', data);
+   //dispatch(postAcademicYear(data));
+    dispatch(postAcademicYear(data)).then((res) => {
+      console.log('post academic year', res);
+      dispatch(fetchAcademicYear())
+    });
+    resetForm();
+    setShowModal(false);
   };
 
   // validations
@@ -67,20 +98,13 @@ const CategoryList = () => {
       keyEvent.preventDefault();
     }
   };
-  //submit data
-  const onSubmit = async (data, { resetForm }) => {
-    console.log('data', data);
-    //dispatch(postCategory(data));
-    resetForm();
-    setShowModal(false);
-    //dispatch(fetchCategories());
-  };
+  
   const handleDeleteConfirmClick = () => {
-    //dispatch(deleteCategory(categoryId));
-    //setCategoryId(null);
+    dispatch(deleteAcademicYear(academicId));
+    setacademicId(null);
     setShowWarning(false);
-    //console.log('categoryy id', categoryId);
-    //dispatch(fetchCategories());
+    console.log('academic id', academicId);
+    dispatch(fetchAcademicYear());
   };
   return (
     <div>
@@ -126,7 +150,7 @@ const CategoryList = () => {
                                 <Field
                                   type="text"
                                   name="academic_year_code"
-                                  placeholder="Academic Year code"
+                                  placeholder="AY2022-23"
                                   className={` w-[200px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block p-2.5  ${
                                     errors.academic_year_code && touched.academic_year_code
                                       ? 'border border-red-500'
@@ -147,7 +171,7 @@ const CategoryList = () => {
                                 <Field
                                   type="text"
                                   name="academic_year"
-                                  placeholder="Enter academic year"
+                                  placeholder="Jun22-Apr23"
                                   className={` w-[200px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block p-2.5  ${
                                     errors.academic_year && touched.academic_year
                                       ? 'border border-red-500'
@@ -170,7 +194,7 @@ const CategoryList = () => {
                                   name="academic_sdate"
                                   selected={values.academic_sdate}
                                   onChange={(date) => setFieldValue('academic_sdate', date)}
-                                  dateFormat="dd/MM/yyyy"
+                                  dateFormat="dd-MM-yyyy"
                                   className={` w-[200px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block p-2.5  ${
                                     errors.academic_sdate && touched.academic_sdate
                                       ? 'border border-red-500'
@@ -206,7 +230,7 @@ const CategoryList = () => {
                                   name="academic_edate"
                                   selected={values.academic_edate}
                                   onChange={(date) => setFieldValue('academic_edate', date)}
-                                  dateFormat="dd/MM/yyyy"
+                                  dateFormat="dd-MM-yyyy"
                                   className={` w-[200px] bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block p-2.5  ${
                                     errors.academic_sdate && touched.academic_sdate
                                       ? 'border border-red-500'
@@ -270,95 +294,98 @@ const CategoryList = () => {
           </>
         ) : null}
 
-        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden">
-              <table className="min-w-full">
-                <thead className="bg-white border-b">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                    >
-                      Academic Year Code
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                    >
-                      Academic Year
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                    >
-                      Academic Year Start Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                    >
-                      Academic Year End Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                    >
-                      Academic Year Final Closure Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-               
+        {!academicYearList.loading && academicYearList.academicYear.data.length > 0 && (
+          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="overflow-hidden">
+                <table className="min-w-full">
+                  <thead className="bg-white border-b">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                      >
+                        Academic Year Code
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                      >
+                        Academic Year
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                      >
+                        Academic Year Start Date
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                      >
+                        Academic Year End Date
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                      >
+                        Academic Year Final Closure Date
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
+                      >
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+
                   <tbody>
-                    <tr
-                      className={`border-b
+                    {academicYearList.academicYear.data.map((academic) => (
+                      <tr
+                        className={`border-b
                         //user.id % 2 === 0 ? "bg-gray-100" : "bg-white"
                       `}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        AYO2023-2024
-                      </td>
-                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        Jan23-Feb24
-                      </td>
-                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        2023-01-30
-                      </td>
-                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        2024-06-01
-                      </td>
-                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        2024-06-30{' '}
-                      </td>
-                      <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        <button onClick={() => handleDeleteClick(1)}>
-                          <RiDeleteBinLine
-                            size={20}
-                            id="2"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {academic.academic_year_code}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {academic.academic_year}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {academic.academic_sdate.substring(0, 10)}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {academic.academic_edate.substring(0, 10)}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {academic.final_closure_date.substring(0, 10)}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <button onClick={() => handleDeleteClick(academic.academic_id)}>
+                            <RiDeleteBinLine
+                              size={20}
+                              id="2"
 
-                            // className="text-red-500 fill-current w-6 h-6"
-                          />
-                        </button>
-                        {/* <button
+                              // className="text-red-500 fill-current w-6 h-6"
+                            />
+                          </button>
+                          {/* <button
                           onClick={() => setShowWarning(true)}
                           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         >
                           Open Modal
                         </button> */}
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
-                
-              </table>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {showWarning ? (
           <div className="fixed z-10 inset-0 overflow-y-auto">
