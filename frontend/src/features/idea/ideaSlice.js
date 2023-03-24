@@ -5,6 +5,7 @@ const initialState = {
   loading: true,
   ideas: [],
   idea:[],
+  latestIdeas:[],
   error: '',
 };
 
@@ -14,6 +15,14 @@ export const fetchIdeas = createAsyncThunk('ideas/fetchIdeas', () => {
   const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
   return axios
     .get('http://127.0.0.1:8000/api/ideas', { headers })
+    .then((response) => response.data);
+});
+
+export const fetchLatestIdeas = createAsyncThunk('ideas/fetchLatestIdeas', () => {
+  const token = Cookies.get('token'); // get the token from localStorage
+  const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
+  return axios
+    .get('http://127.0.0.1:8000/api/ideas_list/latest', { headers })
     .then((response) => response.data);
 });
  
@@ -76,6 +85,19 @@ const ideaSlice = createSlice({
     builder.addCase(fetchIdeas.rejected, (state, action) => {
       state.loading = false;
       state.ideas = [];
+      state.error = action.error.message;
+    });
+    builder.addCase(fetchLatestIdeas.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchLatestIdeas.fulfilled, (state, action) => {
+      state.loading = false;
+      state.latestIdeas = action.payload;
+      state.error = '';
+    });
+    builder.addCase(fetchLatestIdeas.rejected, (state, action) => {
+      state.loading = false;
+      state.latestIdeas = [];
       state.error = action.error.message;
     });
     builder.addCase(postIdea.pending, (state) => {
