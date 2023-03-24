@@ -55,7 +55,7 @@ class IdeasController extends Controller
             $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->find([$id]);
         } else {
             //Get all idea list
-            $ideas = Ideas::with('user','category', 'academic_years', 'department')->get();
+            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->get();
         }
 
         if (is_null($ideas) || $ideas->count() == 0) {
@@ -368,45 +368,45 @@ class IdeasController extends Controller
                     'message' => $message
                 ], $responseCode);
             } else {
-                // $csv =  Writer::createFromString('');
-                // // $csv->insertOne([
-                // //     'idea_id',
-                // //     'idea_description',
-                // //     'category_id',
-                // //     'user_id',
-                // //     'is_anonymous',
-                // //     'file_path',
-                // //     'created_date',
-                // //     'updated_date',
-                // //     'academic_id'
-                // // ]);
-
+                $csv =  Writer::createFromString('');
                 // $csv->insertOne([
-                //     'idea_posted_date',
+                //     'idea_id',
                 //     'idea_description',
-                //     'posted_by',
-                //     'email',
                 //     'category_id',
-                //     'category_type',
-                //     'department_id',
-                //     'department_description',
-                //     'academic_id',
-                //     'academic_year',
-                //     'academic_sdate',
-                //     'academic_edate',
-                //     'has_comments',
-                //     'has_comments_flag',
+                //     'user_id',
                 //     'is_anonymous',
-                //     'comment_cnts',
-                //     'anonymous_comment_cnts',
-                //     'unique_comment_users'
+                //     'file_path',
+                //     'created_date',
+                //     'updated_date',
+                //     'academic_id'
                 // ]);
 
-                // foreach ($ideas as $row) {
-                //     $csv->insertOne($row);
-                // }
+                $csv->insertOne([
+                    'idea_posted_date',
+                    'idea_description',
+                    'posted_by',
+                    'email',
+                    'category_id',
+                    'category_type',
+                    'department_id',
+                    'department_description',
+                    'academic_id',
+                    'academic_year',
+                    'academic_sdate',
+                    'academic_edate',
+                    'has_comments',
+                    'has_comments_flag',
+                    'is_anonymous',
+                    'comment_cnts',
+                    'anonymous_comment_cnts',
+                    'unique_comment_users'
+                ]);
 
-                // $data = $csv->getContent();
+                foreach ($ideas as $row) {
+                    $csv->insertOne($row);
+                }
+
+                $data = $csv->getContent();
             }
         } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
