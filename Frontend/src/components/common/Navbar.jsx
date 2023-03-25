@@ -1,18 +1,22 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../features/auth/authSlice'
+import { logout } from '../../features/auth/authSlice';
 import logo from '../../assets/logo.png';
 import Cookies from 'js-cookie';
+import ProfilePicture from '../idea/ProfilePicture';
 const Navbar = () => {
   const isLogin = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleLogout = () => {
     Cookies.set('isAuthenticated', false);
+    Cookies.set('token', null);
     Cookies.set('userRole', null);
+    Cookies.set('userId', null);
     dispatch(logout());
-    navigate('/')
+    navigate('/');
   };
   return (
     <div className="navbar bg-base-100 px-[100px]">
@@ -40,15 +44,19 @@ const Navbar = () => {
           </Link>
         ) : null}
 
-        {isLogin ? (
+        {isLogin ?(
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <img
+              <div className="flex flex-col items-center w-[35px] h-[35px] p-1 bg-slate-400 rounded-full cursor-pointer">
+                <h6 className="text-white text-xl">a</h6>
+              </div>
+              {/* <div className="flex flex-col items-center">{user.user.data.user_name.charAt(0)}
+                 <img w-10 rounded-full
                   src="https://images.template.net/wp-content/uploads/2015/04/Cartoon-Love-Drawing-Template.jpg"
                   alt="profile"
-                />
-              </div>
+                /> 
+                <ProfilePicture fisrtLetter={user.user.data.user_name.charAt(0) } />
+              </div> */}
             </label>
             <ul
               tabIndex={0}
