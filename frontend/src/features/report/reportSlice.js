@@ -16,7 +16,7 @@ export const fetchReport = createAsyncThunk('department/fetchReport', () => {
     category_id: 1,
     department_id: 1,
     academic_year: 1,
-    show_all: 0,
+    show_all: 1,
   };
   const token = Cookies.get('token'); // get the token from localStorage
   const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token

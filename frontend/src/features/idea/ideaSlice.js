@@ -73,6 +73,7 @@ export const fetchSingleIdea = createAsyncThunk('user/fetchSingleIdea', (id) => 
 const ideaSlice = createSlice({
   name: 'ideas',
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchIdeas.pending, (state) => {
       state.loading = true;

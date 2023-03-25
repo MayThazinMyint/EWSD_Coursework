@@ -24,6 +24,11 @@ const IdeaList = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchIdeas());
+    console.log('Mounted');
+
+    return () => {
+      console.log('Unmounted');
+    };
   }, [dispatch]);
   console.log('ideas', ideaList);
 
@@ -36,7 +41,7 @@ const IdeaList = () => {
   let pageCount = 0;
   let currentData = [];
 
-  if (!ideaList.loading) {
+  if (!ideaList.loading && ideaList.ideas.data.length>0) {
     pageCount = Math.ceil(ideaList.ideas.data.length / dataPerPage);
 
     currentData = ideaList.ideas.data
@@ -49,10 +54,10 @@ const IdeaList = () => {
         />
       ));
 
-      console.log('current data',currentData);
+    console.log('current data', currentData);
   }
 
-  if (ideaList.loading) {
+  if (ideaList.loading || ideaList.ideas.data === undefined) {
     return <p>Loading...</p>;
   }
 

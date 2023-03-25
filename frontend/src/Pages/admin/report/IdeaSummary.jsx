@@ -8,14 +8,27 @@ import { fetchReport } from '../../../features/report/reportSlice';
 import { fetchCategories } from '../../../features/category/categorySlice';
 import { fetchDepartments } from '../../../features/department/departmentSlice';
 import { fetchAcademicYear } from '../../../features/academic/academicSlice';
+import { fetchCsvData, downloadCsv } from '../../../features/report/csvSlice';
+
 const IdeaSummary = () => {
   const report = useSelector((state) => state.report);
   const categoryList = useSelector((state) => state.category);
   const departmentList = useSelector((state) => state.department);
   const academicYearList = useSelector((state) => state.academic);
+  const csvData = useSelector((state) => state.csv.data);
+
+  const handleDownloadClick = () => {
+    if (csvData) {
+      dispatch(downloadCsv());
+    } else {
+      dispatch(fetchCsvData());
+    }
+  };
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAcademicYear());
+    dispatch(fetchCsvData());
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchReport());
@@ -26,7 +39,7 @@ const IdeaSummary = () => {
   useEffect(() => {
     dispatch(fetchDepartments());
   }, [dispatch]);
-  console.log('academicYearList', academicYearList);
+  // console.log('academicYearList', academicYearList);
   // initial values
   const initialValues = {
     hasComment: '',
@@ -62,6 +75,7 @@ const IdeaSummary = () => {
         <div className="flex justify-between space-x-2 py-4">
           <p className="font-bold text-lg ">Idea Summary Report</p>
         </div>
+        <button onClick={handleDownloadClick}>{csvData ? 'Download CSV' : 'Fetch CSV'}</button>
         {/* filter component */}
         {!categoryList.loading && !departmentList.loading && !academicYearList.loading && (
           <div className="flex justify-between space-x-2 py-4">
