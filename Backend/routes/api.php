@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     //Comment    
     Route::get('comment/{idea_id}', [CommentController::class, 'index']);
-    Route::get('comment/add', [CommentController::class, 'store']);
+    Route::post('comment/add', [CommentController::class, 'store']);
     Route::post('comment/delete/{id}', [CommentController::class, 'destroy']);
     Route::post('comment/update/{id}', [CommentController::class, 'update']);
 

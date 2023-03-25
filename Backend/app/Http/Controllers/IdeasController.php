@@ -52,13 +52,13 @@ class IdeasController extends Controller
         $data = '';
         if (!empty($id)) {
             //Get By id
-            $ideas = Ideas::find($id);
+            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->find([$id]);
         } else {
             //Get all idea list
-            $ideas = Ideas::with('user', 'category')->get();
+            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->get();
         }
 
-        if (is_null($ideas)) {
+        if (is_null($ideas) || $ideas->count() == 0) {
             return response()->json([
                 'data' => $id,
                 'message' => "NOT_FOUND"
