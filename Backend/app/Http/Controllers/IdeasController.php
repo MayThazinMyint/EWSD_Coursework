@@ -6,6 +6,7 @@ use App\Models\Ideas;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\AcademicYear;
+use App\Models\Department;
 use App\Http\Requests\IdeaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -137,6 +138,12 @@ class IdeasController extends Controller
 
             foreach ($data as $idea) {
                 $idea->attachment = null;
+    
+                $idea->user = User::find($idea->user_id);
+                $idea->category = Category::find($idea->category_id);
+                $idea->academic_years = AcademicYear::find($idea->academic_id);
+                $idea->department = Department::find($idea->department_id);
+
                 if (!empty($idea->file_path)) {
                     $academicYearCode = AcademicYear::where('academic_id', $idea->academic_id)->value('academic_year_code');
                     $idea->attachment = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);
