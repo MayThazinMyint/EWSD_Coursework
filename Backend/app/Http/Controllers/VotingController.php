@@ -82,5 +82,30 @@ class VotingController extends Controller
         ], $responseCode);
     }
 
-    
+    public function total_voting($idea_id)
+    {
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+        
+        $total_like = 0;
+        $total_dislike = 0;
+        try
+        {
+            $total_like = Voting::where('idea_id', $idea_id)->where('is_liked', 1)->count();
+
+            $total_dislike = Voting::where('idea_id', $idea_id)->where('is_unliked', 1)->count();
+            
+        } catch (\Throwable $th) 
+        {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+        //var_dump($request->idea_id);
+        return response()->json([
+            'total_like' => $total_like,
+            'total_dislike' => $total_dislike
+        ], $responseCode);
+    }    
 }

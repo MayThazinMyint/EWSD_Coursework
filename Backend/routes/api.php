@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\IdeasController;
 use App\Http\Controllers\VotingController;
+use App\Http\Controllers\ReportController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -56,6 +57,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     //Voting
     Route::post('voting', [VotingController::class, 'vote']);
+    Route::get('total_voting/{idea_id}', [VotingController::class, 'total_voting']);
 
     //Report
     Route::post('report/idea', [IdeasController::class, 'ideaReport']);
@@ -63,5 +65,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 // Idea Report 1 downlaod
 Route::get('/download/idea', [IdeasController::class, 'downloadIdeaCsv']);
 
+//summary listing
+Route::get('summaryList', [ReportController::class, 'summaryListing']);
 //download zip file
-Route::get('/download/summary', [ReportController::class, 'download']);
+Route::get('summary/{academic_id}', [ReportController::class, 'downloadZipFile']);
+//download csv file
+Route::get('exportCSV/{academic_id}', [ReportController::class, 'exportCSV']);
+
