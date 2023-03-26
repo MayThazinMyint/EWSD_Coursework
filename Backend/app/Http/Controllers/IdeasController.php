@@ -56,7 +56,7 @@ class IdeasController extends Controller
             $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->find([$id]);
         } else {
             //Get all idea list
-            $ideas = Ideas::with('user','category', 'academic_years', 'department')->get();
+            $ideas = Ideas::with('user','category', 'academic_years', 'department')->orderBy('created_date', 'desc')->get();
         }
 
         if (is_null($ideas) || $ideas->count() == 0) {
@@ -421,6 +421,103 @@ class IdeasController extends Controller
             $responseCode = 500;
         }
         $filename = $academicYear . '_idea_report.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
+        ];
+        return Response::make($data, 200, $headers);
+    }
+
+    public function anonymousCommentReport(Request $request)
+    {
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+
+        try {
+
+            $para_category_id = $request->category_id;
+            $para_from_date = $request->from_date;
+            $para_to_date = $request->to_date;
+            $para_department_id = $request->department_id;
+            $para_show_all = $request->show_all;
+
+            if(!$para_show_all && $para_show_all <> "0"){
+                $para_show_all = 1;
+            }
+
+            $data = DB::select(
+                'CALL sp_anonmyous_comments_rpt(?, ?, ?, ?, ?)',
+                [$para_category_id, $para_from_date, $para_to_date, $para_department_id, $para_show_all]
+            );
+
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+
+        return response()->json([
+            'data' => $data,
+            'message' => $message
+        ], $responseCode);
+    }
+
+    public function anonymousCommentReportCsv(Request $request)
+    {
+        $data = "";
+        $message = "SUCCESS";
+        $responseCode = 200;
+
+        try {
+
+            $para_category_id = $request->query('category_id');
+            $para_from_date = $request->query('from_date');
+            $para_to_date = $request->query('to_date');
+            $para_department_id = $request->query('department_id');
+            $para_show_all = $request->query('show_all');
+
+            $data = DB::select(
+                'CALL sp_anonmyous_comments_rpt(?, ?, ?, ?, ?)',
+                [$para_category_id, $para_from_date, $para_to_date, $para_department_id, $para_show_all]
+            );
+
+            $ideas = collect($data)->map(function ($x) {
+                return (array) $x;
+            })->toArray();
+            if (count($ideas) == 0) {
+                $data = "There is no data to download";
+                return response()->json([
+                    'data' => $data,
+                    'message' => $message
+                ], $responseCode);
+            } else {
+                $csv =  Writer::createFromString('');
+                $csv->insertOne([
+                    'comment_date',
+                    'comment_description',
+                    'idea_description',
+                    'category_id',
+                    'category_type',
+                    'user_name',
+                    'department_id',
+                    'department'
+                ]);
+
+                foreach ($ideas as $row) {
+                    $csv->insertOne($row);
+                }
+                
+                $data = $csv->getContent();
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'data' => "UNEXPECTED_ERROR",
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+        $filename = 'nonymous_comment_report.csv';
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
