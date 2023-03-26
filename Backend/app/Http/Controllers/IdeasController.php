@@ -420,4 +420,75 @@ class IdeasController extends Controller
         ];
         return Response::make($data, 200, $headers);
     }
+
+    public function ideaValidate() 
+    {
+        $canPost = 0;
+
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+
+        $today = date('Y-m-d H:i:s');
+
+        try{
+            
+            //var_dump($canPost);
+            $academic_year = AcademicYear::select('academic_edate')
+                            ->where('is_active', 1)
+                            ->orderby('created_date', 'DESC')
+                            ->first();
+                            
+            if($today < $academic_year->academic_edate)
+            {
+                $canPost = 1;
+            }
+
+            
+        } catch (\Throwable $th) 
+        {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+
+        return response()->json([
+            'canPost' => $canPost
+        ],$responseCode);
+    }
+
+    public function commentValidate() 
+    {
+        $canPost = 0;
+
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+
+        $today = date('Y-m-d H:i:s');
+
+        try{
+            
+            $academic_year = AcademicYear::select('final_closure_date')
+                            ->where('is_active', 1)
+                            ->orderby('created_date', 'DESC')
+                            ->first();
+                            
+            if($today < $academic_year->final_closure_date)
+            {
+                $canPost = 1;
+            }
+
+            
+        } catch (\Throwable $th) 
+        {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+
+        return response()->json([
+            'canPost' => $canPost
+        ],$responseCode);
+    }
 }
