@@ -44,7 +44,7 @@ class IdeasController extends Controller
         . " where QA.user_role_id = 3"
         . " and poster.id = %d";
 
-    private $limit5 = " limit 0,5";
+    private $limit5 = " limit 0,3";
     private $orderByLikedCount = " order by liked_count desc";
     private $orderByCreatedDate = " order by ideas.created_date desc";
 
