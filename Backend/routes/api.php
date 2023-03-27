@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     //Report
     Route::post('report/idea', [IdeasController::class, 'ideaReport']);
+    Route::post('report/comment_anonymous', [IdeasController::class, 'anonymousCommentReport']);
 });
 // Idea Report 1 downlaod
 Route::get('/download/idea', [IdeasController::class, 'downloadIdeaCsv']);
@@ -72,3 +73,4 @@ Route::get('summary/{academic_id}', [ReportController::class, 'downloadZipFile']
 //download csv file
 Route::get('exportCSV/{academic_id}', [ReportController::class, 'exportCSV']);
 
+Route::get('/download/comment_anonymous', [IdeasController::class, 'anonymousCommentReportCsv']);
