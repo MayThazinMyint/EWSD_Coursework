@@ -360,7 +360,7 @@ class IdeasController extends Controller
             $para_category_id = $request->query('category_id');
             $para_department_id = $request->query('department_id');
             $para_academic_year = $request->query('academic_year');
-            $para_show_all = $request->show_all;
+            $para_show_all = $request->query('show_all');
             $results = DB::select(
                 'CALL sp_idea_rpt(?, ?, ?, ?, ?, ?)',
                 [$para_has_comment, $para_is_anonymous, $para_category_id, $para_department_id, $para_academic_year, $para_show_all]
