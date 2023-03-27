@@ -4,7 +4,8 @@ import departmentReducer from "../features/department/departmentSlice";
 import categoryReducer from "../features/category/categorySlice";
 import authReducer from '../features/auth/authSlice';
 import academicReducer from '../features/academic/academicSlice';
-import ideaReducer from '../features/idea/ideaSlice'
+import ideaReducer from '../features/idea/ideaSlice';
+import reportReducer from '../features/report/reportSlice'
 import Cookies from "js-cookie";
 
 const isAuthenticated = Cookies.get('isAuthenticated') === 'true';
@@ -19,6 +20,7 @@ const store = configureStore({
     category: categoryReducer,
     academic: academicReducer,
     ideas: ideaReducer,
+    report: reportReducer,
   },
   preloadedState: {
     auth: {

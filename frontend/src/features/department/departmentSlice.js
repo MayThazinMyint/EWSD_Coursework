@@ -25,10 +25,7 @@ export const fetchDepartments = createAsyncThunk(
 //     return data;
 //   });
 
- export const fetchDepartmentss = createAsyncThunk('department/fetchDepartments',async () => {
- const data = await fetchData('departments');
- return data;
- })
+ 
 
 export const deleteDepartment = createAsyncThunk('department/deleteDepartment', (id) => {
   const token = Cookies.get('token');
