@@ -21,6 +21,13 @@ const Idea = () => {
   const showComment = () => {
     setIsShow(!isShow);
   };
+  if (idea.loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (idea.error) {
+    return <p>There is an error: {idea.error}</p>;
+  }
   return (
     <>
       {!idea.loading ? (

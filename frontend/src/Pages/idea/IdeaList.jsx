@@ -20,7 +20,7 @@ const data = [
 const IdeaList = () => {
   const ideaList = useSelector((state) => state.ideas);
   const [currentPage, setCurrentPage] = useState(0);
-  const [dataPerPage] = useState(2);
+  const [dataPerPage] = useState(10);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchIdeas());
@@ -33,13 +33,13 @@ const IdeaList = () => {
   };
 
   const offset = currentPage * dataPerPage;
-  let pageCount;
-  let currentData;
+  let pageCount = 0;
+  let currentData = [];
 
-  if (!ideaList.loading & ideaList.ideas.data.data) {
-    pageCount = Math.ceil(ideaList.ideas.data.data.length / dataPerPage);
+  if (!ideaList.loading) {
+    pageCount = Math.ceil(ideaList.ideas.data.length / dataPerPage);
 
-    currentData = ideaList.ideas.data.data
+    currentData = ideaList.ideas.data
       .slice(offset, offset + dataPerPage)
       .map((d) => (
         <IdeaCard
@@ -48,6 +48,8 @@ const IdeaList = () => {
           id={d.idea_id}
         />
       ));
+
+      console.log('current data',currentData);
   }
 
   if (ideaList.loading) {
@@ -60,11 +62,11 @@ const IdeaList = () => {
 
   return (
     <>
-      {ideaList.loading ? (
-        <p>Loading...</p>
-      ) : (
+    <p>idea list</p>
+      {!ideaList.loading && ideaList.ideas ? (
+        
         <div className="flex flex-col">
-          <div className="flex">{currentData}</div>
+          <div className="flex flex-row flex-wrap justify-between">{currentData}</div>
           <ReactPaginate
             nextLabel={'next'}
             pageCount={pageCount}
@@ -77,21 +79,10 @@ const IdeaList = () => {
             previousLabel={<FaBackward style={{ fontSize: 18, width: 150 }} />}
           />
         </div>
+      ) : (
+        <p>Loading...</p>
       )}
     </>
-  );
-  return (
-    <div className="p-[50px] flex justify-center flex-row flex-wrap gap-4">
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-      <IdeaCard />
-    </div>
   );
 };
 

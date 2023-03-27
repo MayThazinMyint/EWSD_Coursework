@@ -56,7 +56,11 @@ class IdeasController extends Controller
             $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->find([$id]);
         } else {
             //Get all idea list
+<<<<<<< HEAD
             $ideas = Ideas::with('user','category', 'academic_years', 'department')->orderBy('created_date', 'desc')->get();
+=======
+            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->get();
+>>>>>>> feature/s2-may-thazin
         }
 
         if (is_null($ideas) || $ideas->count() == 0) {
@@ -375,45 +379,45 @@ class IdeasController extends Controller
                     'message' => $message
                 ], $responseCode);
             } else {
-                // $csv =  Writer::createFromString('');
-                // // $csv->insertOne([
-                // //     'idea_id',
-                // //     'idea_description',
-                // //     'category_id',
-                // //     'user_id',
-                // //     'is_anonymous',
-                // //     'file_path',
-                // //     'created_date',
-                // //     'updated_date',
-                // //     'academic_id'
-                // // ]);
-
+                $csv =  Writer::createFromString('');
                 // $csv->insertOne([
-                //     'idea_posted_date',
+                //     'idea_id',
                 //     'idea_description',
-                //     'posted_by',
-                //     'email',
                 //     'category_id',
-                //     'category_type',
-                //     'department_id',
-                //     'department_description',
-                //     'academic_id',
-                //     'academic_year',
-                //     'academic_sdate',
-                //     'academic_edate',
-                //     'has_comments',
-                //     'has_comments_flag',
+                //     'user_id',
                 //     'is_anonymous',
-                //     'comment_cnts',
-                //     'anonymous_comment_cnts',
-                //     'unique_comment_users'
+                //     'file_path',
+                //     'created_date',
+                //     'updated_date',
+                //     'academic_id'
                 // ]);
 
-                // foreach ($ideas as $row) {
-                //     $csv->insertOne($row);
-                // }
+                $csv->insertOne([
+                    'idea_posted_date',
+                    'idea_description',
+                    'posted_by',
+                    'email',
+                    'category_id',
+                    'category_type',
+                    'department_id',
+                    'department_description',
+                    'academic_id',
+                    'academic_year',
+                    'academic_sdate',
+                    'academic_edate',
+                    'has_comments',
+                    'has_comments_flag',
+                    'is_anonymous',
+                    'comment_cnts',
+                    'anonymous_comment_cnts',
+                    'unique_comment_users'
+                ]);
 
-                // $data = $csv->getContent();
+                foreach ($ideas as $row) {
+                    $csv->insertOne($row);
+                }
+
+                $data = $csv->getContent();
             }
         } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
@@ -428,6 +432,7 @@ class IdeasController extends Controller
         return Response::make($data, 200, $headers);
     }
 
+<<<<<<< HEAD
     public function anonymousCommentReport(Request $request)
     {
         $data = "";
@@ -452,12 +457,41 @@ class IdeasController extends Controller
             );
 
         } catch (\Throwable $th) {
+=======
+    public function ideaValidate() 
+    {
+        $canPost = 0;
+
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+
+        $today = date('Y-m-d H:i:s');
+
+        try{
+            
+            //var_dump($canPost);
+            $academic_year = AcademicYear::select('academic_edate')
+                            ->where('is_active', 1)
+                            ->orderby('created_date', 'DESC')
+                            ->first();
+                            
+            if($today < $academic_year->academic_edate)
+            {
+                $canPost = 1;
+            }
+
+            
+        } catch (\Throwable $th) 
+        {
+>>>>>>> feature/s2-may-thazin
             $data = "UNEXPECTED_ERROR";
             $message = $th->getMessage();
             $responseCode = 500;
         }
 
         return response()->json([
+<<<<<<< HEAD
             'data' => $data,
             'message' => $message
         ], $responseCode);
@@ -523,5 +557,44 @@ class IdeasController extends Controller
             'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
         ];
         return Response::make($data, 200, $headers);
+=======
+            'canPost' => $canPost
+        ],$responseCode);
+    }
+
+    public function commentValidate() 
+    {
+        $canPost = 0;
+
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+
+        $today = date('Y-m-d H:i:s');
+
+        try{
+            
+            $academic_year = AcademicYear::select('final_closure_date')
+                            ->where('is_active', 1)
+                            ->orderby('created_date', 'DESC')
+                            ->first();
+                            
+            if($today < $academic_year->final_closure_date)
+            {
+                $canPost = 1;
+            }
+
+            
+        } catch (\Throwable $th) 
+        {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+
+        return response()->json([
+            'canPost' => $canPost
+        ],$responseCode);
+>>>>>>> feature/s2-may-thazin
     }
 }

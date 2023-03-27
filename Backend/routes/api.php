@@ -44,6 +44,13 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('ideas/update/{id}', [IdeasController::class, 'update']);
     Route::get('ideas_list/{getBy}', [IdeasController::class, 'listGetBy']);
 
+    //Ideavalidate
+    Route::get('post/postValidate', [IdeasController::class, 'ideaValidate']);
+
+    //CommentValidate
+    Route::get('comment/commentValidate', [IdeasController::class, 'commentValidate']);
+
+
     //Comment    
     Route::get('comment/{idea_id}', [CommentController::class, 'index']);
     Route::get('comment/add', [CommentController::class, 'store']);
@@ -57,7 +64,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     //Voting
     Route::post('voting', [VotingController::class, 'vote']);
-    Route::get('total_voting/{idea_id}', [VotingController::class, 'total_voting']);
+    Route::get('total_voting', [VotingController::class, 'total_voting']);
 
     //Report
     Route::post('report/idea', [IdeasController::class, 'ideaReport']);
