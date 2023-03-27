@@ -56,11 +56,7 @@ class IdeasController extends Controller
             $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->find([$id]);
         } else {
             //Get all idea list
-<<<<<<< HEAD
-            $ideas = Ideas::with('user','category', 'academic_years', 'department')->orderBy('created_date', 'desc')->get();
-=======
-            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->get();
->>>>>>> feature/s2-may-thazin
+            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->orderBy('created_date', 'desc')->get();
         }
 
         if (is_null($ideas) || $ideas->count() == 0) {
@@ -142,7 +138,7 @@ class IdeasController extends Controller
 
             foreach ($data as $idea) {
                 $idea->attachment = null;
-    
+
                 $idea->user = User::find($idea->user_id);
                 $idea->category = Category::find($idea->category_id);
                 $idea->academic_years = AcademicYear::find($idea->academic_id);
@@ -432,33 +428,7 @@ class IdeasController extends Controller
         return Response::make($data, 200, $headers);
     }
 
-<<<<<<< HEAD
-    public function anonymousCommentReport(Request $request)
-    {
-        $data = "";
-        $message = "SUCCESS";
-        $responseCode = 200;
-
-        try {
-
-            $para_category_id = $request->category_id;
-            $para_from_date = $request->from_date;
-            $para_to_date = $request->to_date;
-            $para_department_id = $request->department_id;
-            $para_show_all = $request->show_all;
-
-            if(!$para_show_all && $para_show_all <> "0"){
-                $para_show_all = 1;
-            }
-
-            $data = DB::select(
-                'CALL sp_anonmyous_comments_rpt(?, ?, ?, ?, ?)',
-                [$para_category_id, $para_from_date, $para_to_date, $para_department_id, $para_show_all]
-            );
-
-        } catch (\Throwable $th) {
-=======
-    public function ideaValidate() 
+    public function ideaValidate()
     {
         $canPost = 0;
 
@@ -468,101 +438,29 @@ class IdeasController extends Controller
 
         $today = date('Y-m-d H:i:s');
 
-        try{
-            
+        try {
+
             //var_dump($canPost);
             $academic_year = AcademicYear::select('academic_edate')
-                            ->where('is_active', 1)
-                            ->orderby('created_date', 'DESC')
-                            ->first();
-                            
-            if($today < $academic_year->academic_edate)
-            {
+                ->where('is_active', 1)
+                ->orderby('created_date', 'DESC')
+                ->first();
+
+            if ($today < $academic_year->academic_edate) {
                 $canPost = 1;
             }
-
-            
-        } catch (\Throwable $th) 
-        {
->>>>>>> feature/s2-may-thazin
+        } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
             $message = $th->getMessage();
             $responseCode = 500;
         }
 
         return response()->json([
-<<<<<<< HEAD
-            'data' => $data,
-            'message' => $message
+            'canPost' => $canPost
         ], $responseCode);
     }
 
-    public function anonymousCommentReportCsv(Request $request)
-    {
-        $data = "";
-        $message = "SUCCESS";
-        $responseCode = 200;
-
-        try {
-
-            $para_category_id = $request->query('category_id');
-            $para_from_date = $request->query('from_date');
-            $para_to_date = $request->query('to_date');
-            $para_department_id = $request->query('department_id');
-            $para_show_all = $request->query('show_all');
-
-            $data = DB::select(
-                'CALL sp_anonmyous_comments_rpt(?, ?, ?, ?, ?)',
-                [$para_category_id, $para_from_date, $para_to_date, $para_department_id, $para_show_all]
-            );
-
-            $ideas = collect($data)->map(function ($x) {
-                return (array) $x;
-            })->toArray();
-            if (count($ideas) == 0) {
-                $data = "There is no data to download";
-                return response()->json([
-                    'data' => $data,
-                    'message' => $message
-                ], $responseCode);
-            } else {
-                $csv =  Writer::createFromString('');
-                $csv->insertOne([
-                    'comment_date',
-                    'comment_description',
-                    'idea_description',
-                    'category_id',
-                    'category_type',
-                    'user_name',
-                    'department_id',
-                    'department'
-                ]);
-
-                foreach ($ideas as $row) {
-                    $csv->insertOne($row);
-                }
-                
-                $data = $csv->getContent();
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'data' => "UNEXPECTED_ERROR",
-                'message' => $th->getMessage()
-            ], 500);
-        }
-
-        $filename = 'nonymous_comment_report.csv';
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
-        ];
-        return Response::make($data, 200, $headers);
-=======
-            'canPost' => $canPost
-        ],$responseCode);
-    }
-
-    public function commentValidate() 
+    public function commentValidate()
     {
         $canPost = 0;
 
@@ -572,21 +470,17 @@ class IdeasController extends Controller
 
         $today = date('Y-m-d H:i:s');
 
-        try{
-            
+        try {
+
             $academic_year = AcademicYear::select('final_closure_date')
-                            ->where('is_active', 1)
-                            ->orderby('created_date', 'DESC')
-                            ->first();
-                            
-            if($today < $academic_year->final_closure_date)
-            {
+                ->where('is_active', 1)
+                ->orderby('created_date', 'DESC')
+                ->first();
+
+            if ($today < $academic_year->final_closure_date) {
                 $canPost = 1;
             }
-
-            
-        } catch (\Throwable $th) 
-        {
+        } catch (\Throwable $th) {
             $data = "UNEXPECTED_ERROR";
             $message = $th->getMessage();
             $responseCode = 500;
@@ -594,7 +488,6 @@ class IdeasController extends Controller
 
         return response()->json([
             'canPost' => $canPost
-        ],$responseCode);
->>>>>>> feature/s2-may-thazin
+        ], $responseCode);
     }
 }

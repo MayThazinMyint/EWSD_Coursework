@@ -69,6 +69,9 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //Report
     Route::post('report/idea', [IdeasController::class, 'ideaReport']);
     Route::post('report/comment_anonymous', [IdeasController::class, 'anonymousCommentReport']);
+
+    // DashBoard
+    Route::get('dashboard/categoryByDepartment', [ReportController::class, 'categoriesByDepartmentView']);
 });
 // Idea Report 1 downlaod
 Route::get('/download/idea', [IdeasController::class, 'downloadIdeaCsv']);
