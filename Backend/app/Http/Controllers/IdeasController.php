@@ -6,6 +6,7 @@ use App\Models\Ideas;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\AcademicYear;
+use App\Models\Department;
 use App\Http\Requests\IdeaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -43,7 +44,7 @@ class IdeasController extends Controller
         . " where QA.user_role_id = 3"
         . " and poster.id = %d";
 
-    private $limit5 = " limit 0,5";
+    private $limit5 = " limit 0,3";
     private $orderByLikedCount = " order by liked_count desc";
     private $orderByCreatedDate = " order by ideas.created_date desc";
 
@@ -55,7 +56,7 @@ class IdeasController extends Controller
             $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->find([$id]);
         } else {
             //Get all idea list
-            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->get();
+            $ideas = Ideas::with('user', 'category', 'academic_years', 'department')->orderBy('created_date', 'desc')->get();
         }
 
         if (is_null($ideas) || $ideas->count() == 0) {
@@ -137,6 +138,12 @@ class IdeasController extends Controller
 
             foreach ($data as $idea) {
                 $idea->attachment = null;
+
+                $idea->user = User::find($idea->user_id);
+                $idea->category = Category::find($idea->category_id);
+                $idea->academic_years = AcademicYear::find($idea->academic_id);
+                $idea->department = Department::find($idea->department_id);
+
                 if (!empty($idea->file_path)) {
                     $academicYearCode = AcademicYear::where('academic_id', $idea->academic_id)->value('academic_year_code');
                     $idea->attachment = asset(env('POST_ATTACHMENT_PATH') . "/" . $academicYearCode . "/" . $idea->file_path);
@@ -353,7 +360,7 @@ class IdeasController extends Controller
             $para_category_id = $request->query('category_id');
             $para_department_id = $request->query('department_id');
             $para_academic_year = $request->query('academic_year');
-            $para_show_all = $request->show_all;
+            $para_show_all = $request->query('show_all');
             $results = DB::select(
                 'CALL sp_idea_rpt(?, ?, ?, ?, ?, ?)',
                 [$para_has_comment, $para_is_anonymous, $para_category_id, $para_department_id, $para_academic_year, $para_show_all]
@@ -419,5 +426,68 @@ class IdeasController extends Controller
             'Content-Disposition' => 'attachment; filename=" ' . $filename . '"',
         ];
         return Response::make($data, 200, $headers);
+    }
+
+    public function ideaValidate()
+    {
+        $canPost = 0;
+
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+
+        $today = date('Y-m-d H:i:s');
+
+        try {
+
+            //var_dump($canPost);
+            $academic_year = AcademicYear::select('academic_edate')
+                ->where('is_active', 1)
+                ->orderby('created_date', 'DESC')
+                ->first();
+
+            if ($today < $academic_year->academic_edate) {
+                $canPost = 1;
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+
+        return response()->json([
+            'canPost' => $canPost
+        ], $responseCode);
+    }
+
+    public function commentValidate()
+    {
+        $canPost = 0;
+
+        $data = "";
+        $message = "";
+        $responseCode = 200;
+
+        $today = date('Y-m-d H:i:s');
+
+        try {
+
+            $academic_year = AcademicYear::select('final_closure_date')
+                ->where('is_active', 1)
+                ->orderby('created_date', 'DESC')
+                ->first();
+
+            if ($today < $academic_year->final_closure_date) {
+                $canPost = 1;
+            }
+        } catch (\Throwable $th) {
+            $data = "UNEXPECTED_ERROR";
+            $message = $th->getMessage();
+            $responseCode = 500;
+        }
+
+        return response()->json([
+            'canPost' => $canPost
+        ], $responseCode);
     }
 }
