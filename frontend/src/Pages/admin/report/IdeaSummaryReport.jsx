@@ -10,7 +10,7 @@ import { fetchDepartments } from '../../../features/department/departmentSlice';
 import { fetchAcademicYear } from '../../../features/academic/academicSlice';
 import { fetchCsvData, downloadCsv } from '../../../features/report/csvSlice';
 
-const IdeaSummary = () => {
+const IdeaSummaryReport = () => {
   const report = useSelector((state) => state.report);
   const categoryList = useSelector((state) => state.category);
   const departmentList = useSelector((state) => state.department);
@@ -75,7 +75,7 @@ const IdeaSummary = () => {
         <div className="flex justify-between space-x-2 py-4">
           <p className="font-bold text-lg ">Idea Summary Report</p>
         </div>
-        <button onClick={handleDownloadClick}>{csvData ? 'Download CSV' : 'Fetch CSV'}</button>
+        {/* <button onClick={handleDownloadClick}>{csvData ? 'Download CSV' : 'Fetch CSV'}</button> */}
         {/* filter component */}
         {!categoryList.loading && !departmentList.loading && !academicYearList.loading && (
           <div className="flex justify-between space-x-2 py-4">
@@ -161,10 +161,11 @@ const IdeaSummary = () => {
                   </div>
                   <div className="text-center">
                     <button
+                      onClick={handleDownloadClick}
                       className="w-full text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                       type="submit"
                     >
-                      Download
+                      {csvData ? 'Download CSV' : 'Fetch CSV'}
                     </button>
                   </div>
                 </Form>
@@ -222,12 +223,12 @@ const IdeaSummary = () => {
                       >
                         Department
                       </th>
-                      <th
+                      {/* <th
                         scope="col"
                         className="text-sm font-medium text-gray-900 px-6 py-4 text-left"
                       >
                         Academic Year
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
                   {report.report.data.map((report) => (
@@ -258,9 +259,9 @@ const IdeaSummary = () => {
                         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           {report.department_description}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                        {/* <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           {report.academic_year}
-                        </td>
+                        </td> */}
                       </tr>
                     </tbody>
                   ))}
@@ -276,4 +277,4 @@ const IdeaSummary = () => {
   );
 };
 
-export default IdeaSummary;
+export default IdeaSummaryReport;

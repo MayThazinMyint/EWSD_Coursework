@@ -5,24 +5,24 @@ import { fetchLatestIdeas } from '../features/idea/ideaSlice';
 import HeroSection from '../components/HeroSection';
 import IdeaCard from '../components/idea/IdeaCard';
 const Home = () => {
-  const ideaList = useSelector((state) => state.ideas);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchLatestIdeas());
-  }, [dispatch]);
-  console.log('latest list', ideaList);
+  // const ideaList = useSelector((state) => state.ideas);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(fetchLatestIdeas());
+  // }, [dispatch]);
+  // console.log('latest list', ideaList);
 
-  if (ideaList.loading) {
-    return <p>Loading...</p>;
-  }
+  // if (ideaList.loading) {
+  //   return <p>Loading...</p>;
+  // }
 
-  if (ideaList.error) {
-    return <p>There is an error: {ideaList.error}</p>;
-  }
+  // if (ideaList.error) {
+  //   return <p>There is an error: {ideaList.error}</p>;
+  // }
   return (
-    <div className="px-[4rem]">
+    <div className="px-[4rem] py-[100px]">
       <HeroSection />
-      <div className="px-4 mx-auto">
+      {/* <div className="px-4 mx-auto">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Popular Posts</h1>
           <Link to="/idea/all">
@@ -60,7 +60,7 @@ const Home = () => {
               />
             ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

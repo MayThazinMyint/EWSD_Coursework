@@ -9,9 +9,16 @@ import {
   MdOutlineLogout,
   MdOutlineDashboardCustomize,
 } from 'react-icons/md';
+import logo from '../../assets/logo.png'
 
 
 export const Sidebardata = [
+  {
+    title: '',
+    path: '/',
+    icon: '',
+    src: logo
+  },
   {
     title: 'Dashboard',
     path: '/admin/dashboard',
@@ -19,7 +26,7 @@ export const Sidebardata = [
   },
   {
     title: 'Idea Posts',
-    path: '',
+    path: '/admin/ideas',
     icon: <FcIdea />,
   },
   {

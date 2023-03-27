@@ -53,10 +53,18 @@ export const fetchSingleIdea = createAsyncThunk('user/fetchSingleIdea', (id) => 
     .then((response) => response.data);
 });
 
-// export const deleteDepartment = createAsyncThunk('department/deleteDepartment', (id) => {
+export const fetchIdeasByDepartment = createAsyncThunk('ideas/fetchIdeasByDepartment', () => {
+  const token = Cookies.get('token'); // get the token from localStorage
+  const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
+  return axios
+    .get('http://127.0.0.1:8000/api/ideas', { headers })
+    .then((response) => response.data);
+});
+
+// export const deleteIdea = createAsyncThunk('department/deleteIdea', (id) => {
 //   const token = Cookies.get('token');
 //   const headers = { Authorization: `Bearer ${token}` };
-//   console.log('delete dept ', id, token);
+//   //console.log('delete idea ', id, token);
 //   return axios
 //     .delete(`http://127.0.0.1:8000/api/department/delete/${id}`, { headers })
 //     .then((response) => response.data);

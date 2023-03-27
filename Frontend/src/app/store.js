@@ -7,7 +7,8 @@ import academicReducer from '../features/academic/academicSlice';
 import ideaReducer from '../features/idea/ideaSlice';
 import reportReducer from '../features/report/reportSlice'
 import csvReducer from '../features/report/csvSlice';
-import commentReducer from '../features/idea/commentSlice'
+import commentReducer from '../features/idea/commentSlice';
+import votingReducer from '../features/idea/votingSlice';
 import Cookies from "js-cookie";
 
 const isAuthenticated = Cookies.get('isAuthenticated') === 'true';
@@ -25,6 +26,7 @@ const store = configureStore({
     report: reportReducer,
     csv: csvReducer,
     comment: commentReducer,
+    voting: votingReducer,
   },
   preloadedState: {
     auth: {

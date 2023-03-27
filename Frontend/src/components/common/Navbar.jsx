@@ -1,15 +1,22 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
 import logo from '../../assets/logo.png';
 import Cookies from 'js-cookie';
 import ProfilePicture from '../idea/ProfilePicture';
+import { fetchSingleUser } from '../../features/user/userSlice';
 const Navbar = () => {
   const isLogin = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.user);
+  console.log('user name',user)
+  const userId = Cookies.get('userId')
+  const userRole = Cookies.get('userRole')
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(fetchSingleUser(userId));
+  }, [dispatch]);
   const handleLogout = () => {
     Cookies.set('isAuthenticated', false);
     Cookies.set('token', null);
@@ -29,9 +36,16 @@ const Navbar = () => {
         <Link to="/">
           <li className="list-none ">Home</li>
         </Link>
-        <Link to="/idea/all">
-          <li className="list-none">Ideas</li>
-        </Link>
+        {userRole == 1 || userRole == 2 || userRole == 3 ? (
+          <Link to="/admin/dashboard">
+            <li className="list-none">Dashboard</li>
+          </Link>
+        ) : null}
+        {isLogin ? (
+          <Link to="/idea/all">
+            <li className="list-none">Ideas</li>
+          </Link>
+        ) : null}
         <Link to="/about">
           <li className="list-none">About Us</li>
         </Link>
@@ -44,11 +58,13 @@ const Navbar = () => {
           </Link>
         ) : null}
 
-        {isLogin ?(
+        {isLogin ? (
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="flex flex-col items-center w-[35px] h-[35px] p-1 bg-slate-400 rounded-full cursor-pointer">
-                <h6 className="text-white text-xl">a</h6>
+                <h6 className="text-white text-xl">
+                  {user.user.data && user.user.data.user_name.charAt(0)}
+                </h6>
               </div>
               {/* <div className="flex flex-col items-center">{user.user.data.user_name.charAt(0)}
                  <img w-10 rounded-full
