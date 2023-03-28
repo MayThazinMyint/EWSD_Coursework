@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     //Voting
     Route::post('voting', [VotingController::class, 'vote']);
-    Route::get('total_voting', [VotingController::class, 'total_voting']);
+    Route::post('total_voting', [VotingController::class, 'total_voting']);
 
     //Report
     Route::post('report/idea', [IdeasController::class, 'ideaReport']);
