@@ -12,6 +12,7 @@ use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\IdeasController;
 use App\Http\Controllers\VotingController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('data', [dummyAPI::class, 'getData']);
 Route::apiResource('users', UserController::class);
@@ -81,3 +82,5 @@ Route::get('summary/{academic_id}', [ReportController::class, 'downloadZipFile']
 Route::get('exportCSV/{academic_id}', [ReportController::class, 'exportCSV']);
 
 Route::get('/download/comment_anonymous', [IdeasController::class, 'anonymousCommentReportCsv']);
+
+Route::get('/dashboard/ideas_by_dept', [DashboardController::class, 'ideasByDept']);
