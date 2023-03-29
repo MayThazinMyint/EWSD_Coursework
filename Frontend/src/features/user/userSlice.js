@@ -6,6 +6,7 @@ const initialState = {
   isAuthenticated: false,
   users: [],
   user: [],
+  addUser:[],
   error: '',
 };
 const api = () => {
@@ -95,12 +96,12 @@ const userSlice = createSlice({
     });
     builder.addCase(addUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.users = action.payload;
+      state.addUser = action.payload;
       state.error = '';
     });
     builder.addCase(addUser.rejected, (state, action) => {
       state.loading = false;
-      state.users = [];
+      state.addUser = [];
       state.error = action.error.message;
     });
     builder.addCase(fetchSingleUser.pending, (state) => {

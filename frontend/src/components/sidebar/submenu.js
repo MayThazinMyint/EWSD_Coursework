@@ -67,7 +67,8 @@ const Submenu = ({ item }) => {
   return (
     <div onClick={() => handleLogout(item)}>
       <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
-        {item.icon}
+        {item.src? <img className='w-[150px]' src={item.src} alt='logo'/>: item.icon}
+        
         <SidebarLabel>{item.title} </SidebarLabel>
 
         <div>{item.subNav && subnav ? item.iconOpened : item.subNav ? item.iconClosed : null}</div>

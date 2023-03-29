@@ -48,7 +48,7 @@ const Login = () => {
         Cookies.set('token', res.payload.data.token);
         if (res.payload.data.user.user_role_id === 4) {
           navigate('/');
-        } else if (res.payload.data.user.user_role_id === 1){
+        } else if (res.payload.data.user.user_role_id === 1 || 2 || 3){
           navigate('/admin/dashboard');
         }
       } else {

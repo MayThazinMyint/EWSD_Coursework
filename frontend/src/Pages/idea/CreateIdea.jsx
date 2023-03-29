@@ -24,8 +24,7 @@ const CreateIdea = () => {
     category_id: '',
     user_id: 1,
     is_anonymous: 0,
-    academic_id: 1,
-    
+    academic_id: 4,
   };
   // validations
   const validationSchema = Yup.object({
@@ -46,14 +45,16 @@ const CreateIdea = () => {
 
     console.log('data', data);
     newFormData.append('user_id', data.user_id);
-    newFormData.append('attachment', data.attachment);
-    newFormData.append('is_anonymous', data.is_anonymous === true? 1: 0);
+    if (data.attachment) {
+      newFormData.append('attachment', data.attachment);
+    }
+    newFormData.append('is_anonymous', data.is_anonymous === true ? 1 : 0);
     newFormData.append('academic_id', initialValues.academic_id);
     console.log('newFormData', newFormData);
 
     dispatch(postIdea(newFormData));
     resetForm();
-    navigate("/idea/all");
+    navigate('/idea/all');
   };
   if (categoryList.loading) {
     return <p>Loading...</p>;
@@ -79,7 +80,7 @@ const CreateIdea = () => {
               {(formik) => (
                 <Form id="myForm" className="space-y-2 " onKeyDown={onKeyDown}>
                   <ConnectedFocusError />
-                  <Label text="Upload Documents" required="*" hint="" />
+                  <Label text="Upload Documents" required="" hint="" />
                   <input
                     type="file"
                     className="py-2 text-gray-900 sm:text-sm rounded-lg  block w-full p-2.5 "
@@ -174,8 +175,6 @@ const CreateIdea = () => {
         </div>
       </div>
     </section>
-
-  
   );
 };
 

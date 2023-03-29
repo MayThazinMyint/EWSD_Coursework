@@ -22,8 +22,9 @@ import Contact from './Pages/Contact';
 import AcademicYear from './Pages/admin/academic/AcademicYear';
 import Dashboard from './Pages/admin/dashboard/Dashobard'
 import Unauthorized from './Pages/routes/Unauthorized';
-import IdeaSummary from './Pages/admin/report/IdeaSummary';
 import AnonymousCommentReport from './Pages/admin/report/AnonymousCommentReport';
+import IdeaSummary from './Pages/admin/idea/ideaSummary';
+import IdeaSummaryReport from './Pages/admin/report/IdeaSummaryReport';
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -51,10 +52,18 @@ function App() {
           }
         />
         <Route
-          path="/admin/dashboard/idea-report"
+          path="/admin/ideas"
           element={
             <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
               <IdeaSummary />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/idea-report"
+          element={
+            <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
+              <IdeaSummaryReport />
             </PrivateRoute>
           }
         />
