@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    public function downloadZipFile(Request $request)
+    public function downloadZipFile($academic_id)
     {
         $zip = new ZipArchive;
+        //Get Academic Year Code by academic id
+        $academic_years = AcademicYear::where('academic_id', "=", $academic_id)->first();
 
-        $academic_years = AcademicYear::where('academic_id', "=", $request->academic_id)->first();
-
-        $fileName = $academic_years->academic_year_code . ".zip";
-
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-            $files = \File::files(public_path('AYC2023-24'));
-
+        $fileName = $academic_years->academic_year_code.".zip";
+        //Create Zip File of the attachement
+        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
+        {
+            $files = \File::files(public_path($academic_years->academic_year_code));
             foreach ($files as $key => $value) {
                 $file = basename($value);
                 $zip->addFile($value, $file);
