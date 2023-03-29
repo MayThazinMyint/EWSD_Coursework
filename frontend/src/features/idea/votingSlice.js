@@ -9,21 +9,37 @@ const initialState = {
 };
 
 // Generates pending, fulfilled and rejected action types
-export const fetchVotes = createAsyncThunk('voting/fetchVotes', (id) => {
+export const fetchVotes = createAsyncThunk('voting/fetchVotes', (data) => {
+  console.log('post vote', data);
   const token = Cookies.get('token');
-  const headers = { Authorization: `Bearer ${token}` };
-  return axios
-    .get(`http://127.0.0.1:8000/api/total_voting/${id}`, { headers })
+  return axios({
+    method: 'get',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      Authorization: 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    url: 'http://127.0.0.1:8000/api/total_voting',
+    //withCredentials: false,
+    data: data,
+  })
     .then((response) => response.data);
 });
 
 export const postVote = createAsyncThunk('voting/postVote', (data) => {
   console.log('post vote', data);
   const token = Cookies.get('token'); // get the token from localStorage
-  const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
-  return axios
-    .post('http://127.0.0.1:8000/api/voting', data, { headers })
-    .then((response) => response.data);
+    return axios({
+      method: 'post',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      url: 'http://127.0.0.1:8000/api/voting',
+      withCredentials: false,
+      data: data,
+    }).then((response) => response.data);
 });
 
 // export const postDepartment = createAsyncThunk(

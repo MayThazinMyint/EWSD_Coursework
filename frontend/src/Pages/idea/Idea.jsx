@@ -16,25 +16,29 @@ const Idea = () => {
   const idea = useSelector((state) => state.ideas);
   const comments = useSelector((state) => state.comment);
   const voting = useSelector((state) => state.voting);
-  const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState(null);
   const [isShow, setIsShow] = useState(false);
   const [like, setLike] = useState(0);
   const [unlike, setUnlike] = useState(0);
   const userId = Cookies.get('userId');
+
   const dispatch = useDispatch();
   let { id } = useParams();
   const [textareaValue, setTextareaValue] = useState('');
   const [textareaError, setTextareaError] = useState(false);
-
+  const dataObj = {
+    "idea_id": Number(id),
+    "user_id": Number(userId),
+  };
+  console.log('data obj',dataObj);
   useEffect(() => {
     dispatch(fetchSingleIdea(id));
     dispatch(fetchComments(id)).then((response) => {
-      console.log('fetch cmt and set cmts', response.payload.data);
+      //console.log('fetch cmt and set cmts', response.payload.data);
       setComment(response.payload.data);
     });
-    dispatch(fetchVotes(id)).then((response) => {
-      console.log('fetch votes and set votes', response.payload);
+    dispatch(fetchVotes(dataObj)).then((response) => {
+      console.log('fetch votes and set votes', response);
       setLike(response.payload.total_like);
       setUnlike(response.payload.total_dislike);
     });
@@ -54,7 +58,7 @@ const Idea = () => {
       // console.log('post cmt', data);
       dispatch(postComment(data)).then((res) => {
         setTextareaValue('');
-        console.log('cmt success', res);
+        //console.log('cmt success', res);
         dispatch(fetchComments(id)).then((response) => {
           setComment(response.payload.data);
         });
@@ -67,34 +71,35 @@ const Idea = () => {
     const data = {
       idea_id: id,
       user_id: userId,
-      is_liked: like+1,
+      is_liked: like + 1,
       is_unliked: 0,
     };
-    console.log('add like data',data);
+    //console.log('add like data', data);
     dispatch(postVote(data)).then((res) => {
       console.log('vote success', res);
-      dispatch(fetchVotes(id)).then((response) => {
+      dispatch(fetchVotes(dataObj)).then((response) => {
+        console.log('after votes', response);
         setLike(response.payload.total_like);
       });
     });
   };
 
   const addDisLike = (e) => {
-     e.preventDefault();
-     const data = {
-       idea_id: id,
-       user_id: userId,
-       is_liked: 0,
-       is_unliked: unlike+1,
-     };
-     console.log('add dislike data', data);
-     dispatch(postVote(data)).then((res) => {
-       console.log('vote success', res);
-       dispatch(fetchVotes(id)).then((response) => {
-         setUnlike(response.payload.total_dislike);
-       });
-     });
-  }
+    e.preventDefault();
+    const data = {
+      idea_id: id,
+      user_id: userId,
+      is_liked: 0,
+      is_unliked: unlike + 1,
+    };
+    console.log('add dislike data', data);
+    dispatch(postVote(data)).then((res) => {
+      console.log('vote success', res);
+      dispatch(fetchVotes(dataObj)).then((response) => {
+        setUnlike(response.payload.total_dislike);
+      });
+    });
+  };
 
   const handleTextareaChange = (e) => {
     setTextareaValue(e.target.value);
@@ -132,7 +137,6 @@ const Idea = () => {
             </div>
             {idea.idea.data[0].attachment ? (
               <img src={idea.idea.data[0].attachment} alt="idea_image" />
-              
             ) : null}
             <div className="flex flex-col space-y-4">
               <p>{idea.idea.data[0].idea_description}</p>

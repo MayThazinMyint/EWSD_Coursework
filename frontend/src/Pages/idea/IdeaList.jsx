@@ -5,7 +5,7 @@ import IdeaCard from '../../components/idea/IdeaCard';
 import { fetchIdeas } from '../../features/idea/ideaSlice';
 import { FaBackward } from 'react-icons/fa';
 import './style/style.css';
-
+import Cookies from 'js-cookie';
 const data = [
   { id: 1, name: 'John' },
   { id: 2, name: 'Jane' },
@@ -38,12 +38,13 @@ const IdeaList = () => {
     console.log('page click');
     setCurrentPage(selected);
   };
-
+const token = Cookies.get('token');
+console.log('votes token', token);
   const offset = currentPage * dataPerPage;
   let pageCount = 0;
   let currentData = [];
 
-  if (!ideaList.loading ) {
+  if (!ideaList.loading && ideaList.ideas.data !== undefined ) {
     pageCount = Math.ceil(ideaList.ideas.data.length / dataPerPage);
 
     currentData = ideaList.ideas.data
@@ -71,7 +72,7 @@ const IdeaList = () => {
 
   return (
     <>
-      {!ideaList.loading && ideaList.ideas ? (
+      {!ideaList.loading && ideaList.ideas !== undefined ? (
         
           <div className="flex flex-col px-[4rem] py-[2rem] space-y-2">
             <div className="grid grid-cols-1 gap-1 space-y-2 lg:pb-[2rem]">
