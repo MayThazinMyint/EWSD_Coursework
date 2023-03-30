@@ -5,8 +5,8 @@ import { BiLike, BiDislike } from 'react-icons/bi';
 import { SlLike, SlDislike } from 'react-icons/sl';
 import { fetchSingleIdea } from '../../features/idea/ideaSlice';
 import { fetchComments, postComment } from '../../features/idea/commentSlice';
-import Like from '../../components/idea/Like';
-import Dislike from '../../components/idea/Dislike';
+import {AiFillLike, AiFillDislike} from 'react-icons/ai';
+import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
 import CategoryTag from '../../components/idea/CategoryTag';
 import Comment from '../../components/comment/Comment';
 import Cookies from 'js-cookie';
@@ -20,17 +20,21 @@ const Idea = () => {
   const [isShow, setIsShow] = useState(false);
   const [like, setLike] = useState(0);
   const [unlike, setUnlike] = useState(0);
+  const [isLiked, setIsLiked] = useState(0);
+  const [isUnliked, setIsUnliked] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false)
   const userId = Cookies.get('userId');
 
   const dispatch = useDispatch();
   let { id } = useParams();
   const [textareaValue, setTextareaValue] = useState('');
   const [textareaError, setTextareaError] = useState(false);
+  const [isChecked, setIsCheck] = useState(false)
   const dataObj = {
     "idea_id": Number(id),
     "user_id": Number(userId),
   };
-  console.log('data obj',dataObj);
+  //console.log('data obj',dataObj);
   useEffect(() => {
     dispatch(fetchSingleIdea(id));
     dispatch(fetchComments(id)).then((response) => {
@@ -41,9 +45,26 @@ const Idea = () => {
       console.log('fetch votes and set votes', response);
       setLike(response.payload.total_like);
       setUnlike(response.payload.total_dislike);
+      if (response.payload.is_user_liked !== null && response.payload.is_user_liked.is_liked === 1) {
+        setIsDisabled(true);
+        setIsLiked(true);
+      }
+      if (response.payload.is_user_liked === null) {
+        setIsDisabled(false);
+        setIsLiked(false);
+        setIsUnliked(false);
+      }
+      if (
+        response.payload.is_user_liked !== null &&
+        response.payload.is_user_liked.is_unliked === 1
+      ) {
+        setIsDisabled(true);
+        setIsUnliked(true);
+      }
+         
     });
   }, [dispatch, id]);
-  console.log('fetch votes', like, unlike);
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     if (textareaValue.trim() === '') {
@@ -51,12 +72,13 @@ const Idea = () => {
     } else {
       const data = {
         comment_description: textareaValue,
-        is_anonymous: 0,
+        is_anonymous: isChecked?1:0,
         user_id: userId,
         idea_id: id,
       };
-      // console.log('post cmt', data);
+      console.log('post cmt', data);
       dispatch(postComment(data)).then((res) => {
+        setIsCheck(false)
         setTextareaValue('');
         //console.log('cmt success', res);
         dispatch(fetchComments(id)).then((response) => {
@@ -74,12 +96,14 @@ const Idea = () => {
       is_liked: like + 1,
       is_unliked: 0,
     };
-    //console.log('add like data', data);
+    // console.log('add like data', data);
     dispatch(postVote(data)).then((res) => {
       console.log('vote success', res);
       dispatch(fetchVotes(dataObj)).then((response) => {
         console.log('after votes', response);
         setLike(response.payload.total_like);
+        setIsDisabled(true);
+        setIsLiked(true);
       });
     });
   };
@@ -97,6 +121,8 @@ const Idea = () => {
       console.log('vote success', res);
       dispatch(fetchVotes(dataObj)).then((response) => {
         setUnlike(response.payload.total_dislike);
+        setIsDisabled(true);
+        setIsUnliked(true);
       });
     });
   };
@@ -106,6 +132,7 @@ const Idea = () => {
     setTextareaError(false);
   };
 
+ 
   const showComment = () => {
     setIsShow(!isShow);
   };
@@ -143,14 +170,14 @@ const Idea = () => {
 
               <div class="flex flex-row items-center gap-2">
                 <div className="flex flex-row justify-center items-center gap-2">
-                  <button onClick={addLike}>
-                    <SlLike size={20} />
+                  <button onClick={addLike} disabled={isDisabled}>
+                    {isLiked ? <AiFillLike size={20} /> : <AiOutlineLike size={20} />}
                   </button>
                   {like}
                 </div>
                 <div className="flex flex-row justify-center items-center gap-2">
-                  <button onClick={addDisLike}>
-                    <SlDislike size={20} />
+                  <button onClick={addDisLike} disabled={isDisabled}>
+                    {isUnliked ? <AiFillDislike size={20} /> : <AiOutlineDislike size={20} />}
                   </button>{' '}
                   {unlike}
                 </div>
@@ -169,6 +196,10 @@ const Idea = () => {
                 placeholder="Write your comment here"
                 required
               ></textarea>
+              <label>
+                <input type="checkbox" checked={isChecked} onChange={() => setIsCheck(!isChecked)} />
+                Do you want to comment anonymously?
+              </label>
               <div className="flex justify-between">
                 <p onClick={showComment}>
                   {!comments.loading && (comment !== null) & (comment.length > 0)
@@ -189,6 +220,7 @@ const Idea = () => {
               <div className="pt-4 flex flex-col space-y-4">
                 {comment.map((cmt) => (
                   <Comment
+                  is_anonymous={cmt.is_anonymous}
                     userName={cmt.user_name}
                     comment_description={cmt.comment_description}
                   />

@@ -10,10 +10,10 @@ const initialState = {
 
 // Generates pending, fulfilled and rejected action types
 export const fetchVotes = createAsyncThunk('voting/fetchVotes', (data) => {
-  console.log('post vote', data);
+  console.log('get vote', data);
   const token = Cookies.get('token');
   return axios({
-    method: 'get',
+    method: 'post',
     headers: {
       'Access-Control-Allow-Origin': '*',
       Authorization: 'Bearer ' + token,
