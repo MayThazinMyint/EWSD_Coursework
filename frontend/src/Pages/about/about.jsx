@@ -32,7 +32,7 @@ const About = () => {
                 {data.name}
               </h5>
             </div>
-            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Role</p>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{data.role}</p>
           </div>
         </div>
       ))}
