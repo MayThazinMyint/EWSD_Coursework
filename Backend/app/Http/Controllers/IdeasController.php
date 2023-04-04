@@ -180,12 +180,12 @@ class IdeasController extends Controller
             // academicEndDate = AcademicYear::select('select academic_edate from academic where academic_id = ?', [1])->pluck('acdemic_edate');
 
             $academicEndDate = AcademicYear::where('academic_id', $request->academic_id)->value('academic_edate');
-            if ($academicEndDate < date('Y-m-d H:i:s')) {
-                $data = "academic year";
-                $message = "CLOUSRE_DATE_REACH";
-                $responseCode = 405;
-                goto RETURN_STATEMENT;
-            }
+            // if ($academicEndDate < date('Y-m-d H:i:s')) {
+            //     $data = "academic year";
+            //     $message = "CLOUSRE_DATE_REACH";
+            //     $responseCode = 405;
+            //     goto RETURN_STATEMENT;
+            // }
 
             if (Category::where([['category_id', $request->category_id], ['is_active', 1]])->count() == 0) {
                 $data = "category";

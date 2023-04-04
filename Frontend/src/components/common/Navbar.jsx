@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
@@ -6,12 +6,14 @@ import logo from '../../assets/logo.png';
 import Cookies from 'js-cookie';
 import ProfilePicture from '../idea/ProfilePicture';
 import { fetchSingleUser } from '../../features/user/userSlice';
-const Navbar = () => {
+import { FaBars, FaTimes } from 'react-icons/fa';
+
+const NavBar = () => {
+  const [nav, setNav] = useState(false);
   const isLogin = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.user);
-  console.log('user name',user)
-  const userId = Cookies.get('userId')
-  const userRole = Cookies.get('userRole')
+  const userId = Cookies.get('userId');
+  const userRole = Cookies.get('userRole');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -22,86 +24,87 @@ const Navbar = () => {
     Cookies.set('token', null);
     Cookies.set('userRole', null);
     Cookies.set('userId', null);
+    Cookies.set('departmentId', null);
     dispatch(logout());
     navigate('/');
   };
+  const links = [
+    {
+      id: 1,
+      name: 'home',
+      link: '/home',
+    },
+    {
+      id: 3,
+      name: 'Ideas',
+      link: '/idea/all',
+    },
+    {
+      id: 4,
+      name: 'Add Idea',
+      link: '/idea/add',
+    },
+    {
+      id: 5,
+      name: 'About Us',
+      link: '/about',
+    },
+    {
+      id: 6,
+      name: 'profile',
+      link: '/user/profile',
+    },
+    {
+      id: 7,
+      name: 'logout',
+      link: '/',
+    },
+    
+  ];
+
   return (
-    <div className="navbar bg-base-100 px-[100px]">
-      <div className="flex-1">
-        <p className="btn btn-ghost normal-case text-xl">
-          <img src={logo} className="w-full h-[50px]" alt="" />
-        </p>
+    <div className="flex justify-between z-[100] items-center w-full h-[80px] md:px-[100px] px-[25px] bg-slate-100  text-slate-500 fixed">
+      <div className="flex space-x-2 justify-center items-center">
+        <h1 className="text-2xl font-signature text-slate-800">Idea Hub</h1>
+        <Link to='/admin/dashboard' className="text-lg font-signature text-slate-800">{userRole == 1 || userRole == 2 || userRole == 3 ? 'Dashboard':null}</Link>
       </div>
-      <div className="flex-none gap-4">
-        <Link to="/">
-          <li className="list-none ">Home</li>
-        </Link>
-        {userRole == 1 || userRole == 2 || userRole == 3 ? (
-          <Link to="/admin/dashboard">
-            <li className="list-none">Dashboard</li>
-          </Link>
-        ) : null}
-        {isLogin ? (
-          <Link to="/idea/all">
-            <li className="list-none">Ideas</li>
-          </Link>
-        ) : null}
-        <Link to="/about">
-          <li className="list-none">About Us</li>
-        </Link>
-        <Link to="/contact">
-          <li className="list-none">Contact Us</li>
-        </Link>
-        {isLogin ? (
-          <Link to="/idea/add">
-            <li className="list-none">Add Idea</li>
-          </Link>
-        ) : null}
 
-        {isLogin ? (
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="flex flex-col items-center w-[35px] h-[35px] p-1 bg-slate-400 rounded-full cursor-pointer">
-                <h6 className="text-white text-xl">
-                  {user.user.data && user.user.data.user_name.charAt(0)}
-                </h6>
-              </div>
-              {/* <div className="flex flex-col items-center">{user.user.data.user_name.charAt(0)}
-                 <img w-10 rounded-full
-                  src="https://images.template.net/wp-content/uploads/2015/04/Cartoon-Love-Drawing-Template.jpg"
-                  alt="profile"
-                /> 
-                <ProfilePicture fisrtLetter={user.user.data.user_name.charAt(0) } />
-              </div> */}
-            </label>
-            <ul
-              tabIndex={0}
-              className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+      <ul className="hidden md:flex">
+        {links.map(({ id, link, name }) => (
+          <li
+            key={id}
+            className="px-4 cursor-pointer capitalize font-medium text-gray-500 hover:scale-105 duration-200"
+          >
+            <Link to={`${link}`} onClick={name === 'logout' && handleLogout}>
+              {isLogin ? name : null}
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <div
+        onClick={() => setNav(!nav)}
+        className="cursor-pointer pr-4 z-10 text-gray-500 md:hidden"
+      >
+        {nav ? <FaTimes size={30} /> : <FaBars size={30} />}
+      </div>
+
+      {nav && (
+        <ul className="flex flex-col justify-center items-center absolute  top-0 left-0 w-full h-screen bg-gradient-to-b from-black to-gray-800 text-gray-500">
+          {links.map(({ id, link, name }) => (
+            <li
+              key={id}
+              className="px-4 cursor-pointer capitalize py-6 text-3xl hover:underline-offset-1"
             >
-              <Link to="/user/profile">
-                <li>
-                  <p>My Profile</p>
-                </li>
+              <Link onClick={() => setNav(!nav)} to={link} smooth duration={500}>
+                {name}
               </Link>
-
-              <Link to="/user/ideas">
-                <li>
-                  <p>My Idea Posts</p>
-                </li>
-              </Link>
-              <li>
-                <button onClick={() => handleLogout()}>Log out</button>
-              </li>
-            </ul>
-          </div>
-        ) : (
-          <Link to="/login">
-            <li className="list-none">Login</li>
-          </Link>
-        )}
-      </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
-export default Navbar;
+export default NavBar;

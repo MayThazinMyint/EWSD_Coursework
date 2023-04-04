@@ -20,7 +20,7 @@ class ReportController extends Controller
         $fileName = $academic_years->academic_year_code . ".zip";
 
         if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-            $files = \File::files(public_path('AYC2023-24'));
+            $files = \File::files(public_path($academic_years->academic_year_code));
 
             foreach ($files as $key => $value) {
                 $file = basename($value);

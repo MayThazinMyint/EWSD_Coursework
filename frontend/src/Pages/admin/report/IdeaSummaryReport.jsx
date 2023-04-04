@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -9,6 +9,7 @@ import { fetchCategories } from '../../../features/category/categorySlice';
 import { fetchDepartments } from '../../../features/department/departmentSlice';
 import { fetchAcademicYear } from '../../../features/academic/academicSlice';
 import { fetchCsvData, downloadCsv } from '../../../features/report/csvSlice';
+import Loading from '../../../components/common/Loading';
 
 const IdeaSummaryReport = () => {
   const report = useSelector((state) => state.report);
@@ -16,13 +17,23 @@ const IdeaSummaryReport = () => {
   const departmentList = useSelector((state) => state.department);
   const academicYearList = useSelector((state) => state.academic);
   const csvData = useSelector((state) => state.csv.data);
-
+  const [reportList,setReportList] = useState(null)
   const handleDownloadClick = () => {
     if (csvData) {
-      dispatch(downloadCsv());
+      dispatch(
+        downloadCsv(
+          'http://127.0.0.1:8000/api/download/idea?has_comment=1&is_anonymous=1&category_id=1&department_id=1&academic_year=1&show_all=1',
+        ),
+      );
     } else {
       dispatch(fetchCsvData());
     }
+  };
+
+  const handleFilterClick = async (data) => {
+    //const { resetForm } = _ref;
+    console.log('register data', data);
+    //resetForm();
   };
 
   const dispatch = useDispatch();
@@ -31,7 +42,9 @@ const IdeaSummaryReport = () => {
     dispatch(fetchCsvData());
   }, [dispatch]);
   useEffect(() => {
-    dispatch(fetchReport());
+    dispatch(fetchReport()).then((res) => {
+      setReportList(res.payload.data)
+    })
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchCategories());
@@ -61,8 +74,8 @@ const IdeaSummaryReport = () => {
     resetForm();
   };
 
-  if (report.loading) {
-    return <p>Loading...</p>;
+  if (report.loading || reportList === null) {
+    return <Loading />
   }
 
   if (report.error) {
@@ -71,9 +84,9 @@ const IdeaSummaryReport = () => {
   return (
     <div className="flex flex-col">
       <Sidebar />
-      <div className="flex flex-col pl-[300px] py-[50px]">
+      <div className="flex flex-col pl-[300px] py-[50px] pr-[50px]">
         <div className="flex justify-between space-x-2 py-4">
-          <p className="font-bold text-lg ">Idea Summary Report</p>
+          <p className="font-bold text-lg ">All Reports with filter</p>
         </div>
         {/* <button onClick={handleDownloadClick}>{csvData ? 'Download CSV' : 'Fetch CSV'}</button> */}
         {/* filter component */}
@@ -161,6 +174,15 @@ const IdeaSummaryReport = () => {
                   </div>
                   <div className="text-center">
                     <button
+                      
+                      className="w-full text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      
+                    >
+                      Filter
+                    </button>
+                  </div>
+                  <div className="text-center">
+                    <button
                       onClick={handleDownloadClick}
                       className="w-full text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                       type="submit"
@@ -173,7 +195,7 @@ const IdeaSummaryReport = () => {
             </Formik>
           </div>
         )}
-        {!report.loading && report.report.data.length > 0 ? (
+        {!report.loading && reportList.length > 0 ? (
           <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
@@ -231,7 +253,7 @@ const IdeaSummaryReport = () => {
                       </th> */}
                     </tr>
                   </thead>
-                  {report.report.data.map((report) => (
+                  {reportList.map((report) => (
                     <tbody>
                       <tr
                         className={`border-b
@@ -242,7 +264,7 @@ const IdeaSummaryReport = () => {
                           {report.idea_posted_date}
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                          {report.idea_description}
+                          {report.idea_description.slice(0, 20)}...
                         </td>
                         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           {report.posted_by}

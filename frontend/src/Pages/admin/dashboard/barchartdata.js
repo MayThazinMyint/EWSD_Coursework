@@ -17,6 +17,7 @@ const Bardata = [
     }
 ]
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     labels: Bardata.map((data) => data && data.label),
     datasets: [

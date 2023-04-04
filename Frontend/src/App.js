@@ -17,7 +17,7 @@ import IdeaList from './Pages/idea/IdeaList';
 import Idea from './Pages/idea/Idea';
 import Profile from './Pages/staff/Profile';
 import Ideas from './Pages/staff/Ideas';
-import About from './Pages/About';
+import About from './Pages/about/about';
 import Contact from './Pages/Contact';
 import AcademicYear from './Pages/admin/academic/AcademicYear';
 import Dashboard from './Pages/admin/dashboard/Dashobard'
@@ -25,6 +25,8 @@ import Unauthorized from './Pages/routes/Unauthorized';
 import AnonymousCommentReport from './Pages/admin/report/AnonymousCommentReport';
 import IdeaSummary from './Pages/admin/idea/ideaSummary';
 import IdeaSummaryReport from './Pages/admin/report/IdeaSummaryReport';
+import IdeaReport from './Pages/admin/report/IdeaReport';
+import Summary from './Pages/admin/report/Summary';
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -34,10 +36,10 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/idea/all" element={<IdeaList />} />
         <Route path="/idea/:id" element={<Idea />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<Error />} />
@@ -60,10 +62,27 @@ function App() {
           }
         />
         <Route
-          path="/admin/dashboard/idea-report"
+          path="/admin/dashboard/report"
           element={
             <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
               <IdeaSummaryReport />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard/idea-report"
+          element={
+            <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
+              <IdeaReport />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin/dashboard/summary"
+          element={
+            <PrivateRoute isAuth={isAuthenticated} role={Number(userRole)}>
+              <Summary />
             </PrivateRoute>
           }
         />

@@ -8,29 +8,34 @@ import { useSelector, useDispatch } from 'react-redux';
 import Label from '../../components/Label';
 import { fetchCategories } from '../../features/category/categorySlice';
 import { postIdea } from '../../features/idea/ideaSlice';
+import Cookies from 'js-cookie';
+import Loading from '../../components/common/Loading';
 const CreateIdea = () => {
   const user = useSelector((state) => state.auth);
   const categoryList = useSelector((state) => state.category);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userId = Cookies.get('userId');
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
   // initial values
-  // to add department id
   const initialValues = {
     idea_description: '',
     attachment: '',
     category_id: '',
-    user_id: 1,
-    is_anonymous: 0,
+    user_id: userId,
+    is_anonymous: false,
     academic_id: 4,
+    terms: false,
   };
   // validations
   const validationSchema = Yup.object({
     idea_description: Yup.string().required('Idea description is required.'),
     category_id: Yup.string().required('Category is required.'),
-    // terms: Yup.boolean().oneOf([true], 'You must accept the terms and conditions'),
+    terms: Yup.boolean()
+      .required('The terms and conditions must be accepted.')
+      .oneOf([true], 'The terms and conditions must be accepted.'),
   });
   // for preventing on enter key formik
   const onKeyDown = (keyEvent) => {
@@ -40,6 +45,7 @@ const CreateIdea = () => {
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
+    console.log('is anonymous', data);
     let myForm = document.getElementById('myForm');
     let newFormData = new FormData(myForm);
 
@@ -50,19 +56,20 @@ const CreateIdea = () => {
     }
     newFormData.append('is_anonymous', data.is_anonymous === true ? 1 : 0);
     newFormData.append('academic_id', initialValues.academic_id);
-    console.log('newFormData', newFormData);
+    //console.log('newFormData', newFormData);
 
-    dispatch(postIdea(newFormData));
-    resetForm();
-    navigate('/idea/all');
+    dispatch(postIdea(newFormData)).then((res) => {
+      resetForm();
+      navigate('/idea/all');
+    });
   };
   if (categoryList.loading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   return (
-    <section className=" bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-[80vh] lg:py-0">
+    <section className="bg-gray-50 dark:bg-gray-900 md:pt-[25px]">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-[100vh] lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex">
@@ -138,11 +145,9 @@ const CreateIdea = () => {
                     <Field
                       type="checkbox"
                       name="is_anonymous"
-                      className={`bg-gray-50 border border-gray-300  sm:text-sm rounded-lg   p-2.5  ${
-                        formik.errors.is_anonymous && formik.touched.is_anonymous
-                          ? 'border border-red-500'
-                          : ''
-                      }`}
+                      checked={formik.values.is_anonymous}
+                      onChange={formik.handleChange}
+                      className="bg-gray-50 border border-gray-300  sm:text-sm rounded-lg   p-2.5"
                     />
                     Do you want to post anonymously?
                   </label>
@@ -161,7 +166,7 @@ const CreateIdea = () => {
                   </div>
                   <div className="text-center pt-4">
                     <button
-                      className="w-[25%] text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      className="md:w-[25%] w-[100px] text-white bg-slate-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                       type="submit"
                     >
                       Submit

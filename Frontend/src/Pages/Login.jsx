@@ -11,7 +11,7 @@ import ErrorServer from '../components/ErrorServer';
 const Login = () => {
   const [errorServer, setErrorServer] = useState('');
   const auth = useSelector((state) => state.auth);
-  console.log('auth', auth.isAuthenticated);
+  //console.log('auth', auth.isAuthenticated);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // initial values
@@ -39,26 +39,32 @@ const Login = () => {
     dispatch(login(data)).then((res) => {
        setErrorServer('');
       if (res.payload) {
-       
-        console.log('error server',errorServer);
         console.log('res login', res);
         Cookies.set('isAuthenticated', 'true');
         Cookies.set('userRole', res.payload.data.user.user_role_id);
         Cookies.set('userId', res.payload.data.user.id);
         Cookies.set('token', res.payload.data.token);
-        if (res.payload.data.user.user_role_id === 4) {
-          navigate('/');
-        } else if (res.payload.data.user.user_role_id === 1 || 2 || 3){
+        Cookies.set('departmentId', res.payload.data.user.department_id);
+        
+        const role = res.payload.data.user.user_role_id;
+        console.log('role', res.payload.data.user.user_role_id); 
+        
+        if (role === 4 || role === '4'){
+          console.log('navigate to home');
+          navigate('/home');
+        } else {
+          
+          console.log('navigate to dashboard');
           navigate('/admin/dashboard');
         }
       } else {
-        console.log('show error');
+        //console.log('show error');
         setErrorServer('Email or Passowrd is incorrect');
       }
     });
   };
   return (
-    <section className="h-[75vh] mt-16 ">
+    <section className="h-[85vh] pt-[50px] ">
       <div className="flex flex-col items-center justify-center h-auto md:mx-auto  pt-16  ">
         <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img

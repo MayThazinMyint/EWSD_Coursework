@@ -5,35 +5,39 @@ import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import Sidebar from '../../../components/sidebar/Sidebar';
+import Loading from '../../../components/common/Loading'
 const UserList = () => {
   const user = useSelector((state) => state.user);
   const [showWarning, setShowWarning] = useState(false);
   const [userId, setUserId] = useState();
+  const [userList, setUserList] = useState(null)
   const handleCancel = () => {
     setShowWarning(false);
   };
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchUsers()).then((res) => {
+      setUserList(res.payload.data)
+    })
   }, [dispatch]);
 
   const handleDeleteClick = (userId) => {
     setUserId(userId);
     setShowWarning(true);
-    console.log('user id', userId);
+    //console.log('user id', userId);
   };
 
   const handleDeleteConfirmClick = () => {
     dispatch(deleteUser(userId));
     setUserId(null);
     setShowWarning(false);
-    console.log('user id', userId);
+    //console.log('user id', userId);
     dispatch(fetchUsers())
   };
 
-  if (user.loading) {
-    return <p>Loading...</p>;
+  if (user.loading || userList === null) {
+    return <Loading />;
   }
 
   if (user.error) {
@@ -55,7 +59,7 @@ const UserList = () => {
 
           {/* {user.loading && <div>Loading...</div>}
       {!user.loading && user.error ? <div>Error: {user.error}</div> : null} */}
-          {!user.loading && user.users !== undefined ? (
+          {!user.loading && (userList !== undefined || null) ? (
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="overflow-hidden">
@@ -102,8 +106,8 @@ const UserList = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {user.users !== undefined &&
-                        user.users.data.map((user) => (
+                      {(userList !== undefined || null) &&
+                        userList.map((user) => (
                           <tr
                             className={`border-b 
                         //user.id % 2 === 0 ? "bg-gray-100" : "bg-white"

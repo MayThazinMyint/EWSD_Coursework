@@ -6,6 +6,8 @@ const initialState = {
   ideas: [],
   idea:[],
   latestIdeas:[],
+  popularIdeas:[],
+  ideaByDept:[],
   error: '',
 };
 
@@ -23,6 +25,14 @@ export const fetchLatestIdeas = createAsyncThunk('ideas/fetchLatestIdeas', () =>
   const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
   return axios
     .get('http://127.0.0.1:8000/api/ideas_list/latest', { headers })
+    .then((response) => response.data);
+});
+
+export const fetchPopularIdeas = createAsyncThunk('ideas/fetchPopularIdeas', () => {
+  const token = Cookies.get('token'); // get the token from localStorage
+  const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
+  return axios
+    .get('http://127.0.0.1:8000/api/ideas_list/popular', { headers })
     .then((response) => response.data);
 });
  
@@ -53,13 +63,21 @@ export const fetchSingleIdea = createAsyncThunk('user/fetchSingleIdea', (id) => 
     .then((response) => response.data);
 });
 
-export const fetchIdeasByDepartment = createAsyncThunk('ideas/fetchIdeasByDepartment', () => {
+export const fetchIdeasByDepartment = createAsyncThunk('ideas/fetchIdeasByDepartment', (id) => {
   const token = Cookies.get('token'); // get the token from localStorage
   const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
   return axios
-    .get('http://127.0.0.1:8000/api/ideas', { headers })
+    .get(`http://127.0.0.1:8000/api/ideas_list/byDepartment?department_id=${id}`, { headers })
     .then((response) => response.data);
 });
+
+// export const fetchIdeasByUserId = createAsyncThunk('ideas/fetchIdeasByDepartment', (id) => {
+//   const token = Cookies.get('token'); // get the token from localStorage
+//   const headers = { Authorization: `Bearer ${token}` }; // set the Authorization header with the token
+//   return axios
+//     .get('http://127.0.0.1:8000/api/ideas', { headers })
+//     .then((response) => response.data);
+// });
 
 // export const deleteIdea = createAsyncThunk('department/deleteIdea', (id) => {
 //   const token = Cookies.get('token');
@@ -135,6 +153,32 @@ const ideaSlice = createSlice({
     builder.addCase(fetchSingleIdea.rejected, (state, action) => {
       state.loading = false;
       state.idea = [];
+      state.error = action.error.message;
+    });
+    builder.addCase(fetchIdeasByDepartment.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchIdeasByDepartment.fulfilled, (state, action) => {
+      state.loading = false;
+      state.ideaByDept = action.payload;
+      state.error = '';
+    });
+    builder.addCase(fetchIdeasByDepartment.rejected, (state, action) => {
+      state.loading = false;
+      state.ideaByDept = [];
+      state.error = action.error.message;
+    });
+    builder.addCase(fetchPopularIdeas.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchPopularIdeas.fulfilled, (state, action) => {
+      state.loading = false;
+      state.popularIdeas = action.payload;
+      state.error = '';
+    });
+    builder.addCase(fetchPopularIdeas.rejected, (state, action) => {
+      state.loading = false;
+      state.popularIdeas = [];
       state.error = action.error.message;
     });
     // builder.addCase(deleteDepartment.rejected, (state, action) => {

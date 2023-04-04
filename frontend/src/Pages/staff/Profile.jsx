@@ -16,12 +16,12 @@ const Profile = () => {
     dispatch(fetchSingleUser(id));
   }, [dispatch, id]);
   return (
-    <div class="flex items-center h-[75vh]  w-full justify-center">
+    <div class="flex items-center pt-8 h-[80vh]  w-full justify-center">
       {!user.loading && (
-        <div class="max-w-md">
+        <div class="md:max-w-md max-w-sm">
           <div class="flex flex-col items-center bg-white shadow-xl rounded-lg py-3">
             <ProfilePicture fisrtLetter={user.user.data.user_name.charAt(0)} />
-            <div class="p-8">
+            <div class="md:p-8 p-2">
               <h3 class="text-center text-xl text-gray-900 font-medium leading-8">
                 {user.user.data.user_name}
               </h3>

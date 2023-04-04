@@ -4,7 +4,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { ConnectedFocusError } from 'focus-formik-error';
 import { RiDeleteBinLine } from 'react-icons/ri';
-
+import ErrorServer from '../../../components/ErrorServer';
+import Loading from '../../../components/common/Loading'
 import {
   fetchCategories,
   postCategory,
@@ -17,8 +18,11 @@ const CategoryList = () => {
   const [showModal, setShowModal] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [categoryId, setCategoryId] = useState();
+    const [errorServer, setErrorServer] = useState('');
+
   const handleCancel = () => {
     setShowWarning(false);
+    setErrorServer('');
   };
 
   const categoryList = useSelector((state) => state.category);
@@ -31,17 +35,15 @@ const CategoryList = () => {
   const handleDeleteClick = (userId) => {
     setCategoryId(userId);
     setShowWarning(true);
-    console.log('user id', userId);
+    // //console.log('user id', userId);
   };
 
   console.log('categorylist', categoryList.categories);
   if (categoryList.loading) {
-    return <p>Loading...</p>;
+    return <Loading />
   }
 
-  if (categoryList.error) {
-    return <p>There is an error: {categoryList.error}</p>;
-  }
+
   const initialValues = {
     category_code: '',
     category_type: '',
@@ -61,18 +63,25 @@ const CategoryList = () => {
   };
   //submit data
   const onSubmit = async (data, { resetForm }) => {
-    console.log('data', data);
     dispatch(postCategory(data));
+    
     resetForm();
     setShowModal(false);
     dispatch(fetchCategories());
   };
+
   const handleDeleteConfirmClick = () => {
-    dispatch(deleteCategory(categoryId));
-    setCategoryId(null);
-    setShowWarning(false);
-    console.log('categoryy id', categoryId);
-    dispatch(fetchCategories());
+    dispatch(deleteCategory(categoryId)).then((res) => {
+      // nconsole.log('delete res', res);
+      if (res.error) {
+      setErrorServer('This category is in use.');
+      } else {
+        setCategoryId(null);
+        setShowWarning(false);
+        // console.log('categoryy id', categoryId);
+        dispatch(fetchCategories());
+      }
+    });
   };
   return (
     <div>
@@ -302,6 +311,7 @@ const CategoryList = () => {
                     </button>
                   </span>
                 </div>
+                <ErrorServer msg={errorServer} />
               </div>
             </div>
           </div>

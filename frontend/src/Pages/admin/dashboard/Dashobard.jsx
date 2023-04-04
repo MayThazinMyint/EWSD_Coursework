@@ -7,7 +7,7 @@ const Dashobard = () => {
     <div className="flex">
       <Sidebar />
       <div className="px-[300px] pt-[100px]">
-        dashboard
+        <p className='text-2xl font-bold'>Dashboard</p>
         <div className='flex'>
           <BarChart />
           <PieChart />

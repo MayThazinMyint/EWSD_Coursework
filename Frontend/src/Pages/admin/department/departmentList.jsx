@@ -7,6 +7,7 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { fetchDepartments, postDepartment,deleteDepartment } from '../../../features/department/departmentSlice';
 import Label from '../../../components/Label';
 import Sidebar from '../../../components/sidebar/Sidebar';
+import Loading from '../../../components/common/Loading';
 
 const DepartmentList = () => {
   const [showModal, setShowModal] = useState(false);
@@ -20,9 +21,9 @@ const DepartmentList = () => {
   useEffect(() => {
     dispatch(fetchDepartments());
   }, [dispatch]);
-  console.log('departmentList', departmentList.departments.data);
+  //console.log('departmentList', departmentList.departments.data);
   if (departmentList.loading) {
-    return <p>Loading...</p>;
+    return <Loading />
   }
 
   if (departmentList.error) {

@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-export const fetchCsvData = () => async (dispatch) => {
+import { createAsyncThunk } from '@reduxjs/toolkit';
+export const fetchCsvData = () => async (dispatch, downloadUrl) => {
   try {
     dispatch(fetchCsvDataStart());
-    const response = await fetch(
-      'http://127.0.0.1:8000/api/download/idea?has_comment=1&is_anonymous=1&category_id=1&department_id=1&academic_year=1&show_all=1',
-    );
+    const response = await fetch('http://127.0.0.1:8000/api/exportCSV/3');
     const csvData = await response.text();
     dispatch(fetchCsvDataSuccess(csvData));
   } catch (error) {
@@ -12,12 +11,25 @@ export const fetchCsvData = () => async (dispatch) => {
   }
 };
 
+export const downloadZipFile = createAsyncThunk('zipFile/download', async (url, thunkAPI) => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const urlObject = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = urlObject;
+  link.download = 'file.zip';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
 const csvSlice = createSlice({
   name: 'csv',
   initialState: {
     data: null,
     isLoading: false,
     error: null,
+    status: 'idle',
   },
   reducers: {
     fetchCsvDataStart(state) {
@@ -41,6 +53,19 @@ const csvSlice = createSlice({
       document.body.appendChild(link);
       link.click();
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(downloadZipFile.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(downloadZipFile.fulfilled, (state) => {
+        state.status = 'succeeded';
+      })
+      .addCase(downloadZipFile.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 

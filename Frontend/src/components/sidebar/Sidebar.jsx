@@ -1,16 +1,17 @@
-import React, {useState} from "react";
-import  styled  from 'styled-components';
-import { Link } from "react-router-dom";
-import * as  FaIcons  from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai'
-import { Sidebardata } from "./sidebardata";
-import Submenu from "./submenu";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import * as FaIcons from 'react-icons/fa';
+import * as AiIcons from 'react-icons/ai';
+import Cookies from 'js-cookie';
+import { adminSidebardata, QACoordinatorSidebardata, QAManagerSidebardata } from './sidebardata';
+import Submenu from './submenu';
 
 const Nav = styled.div`
   height: full;
   display: flex;
   justify-content: flex-start;
-  align-items:  center;
+  align-items: center;
   transition: 350ms;
 `;
 
@@ -24,16 +25,20 @@ const NavIcon = styled(Link)`
 `;
 
 const SidebarNav = styled.nav`
-  background: #EEEEEE;
+  background: #eeeeee;
   width: 250px;
+
   height: 100vh;
+
   display: flex;
   top: 0;
   justify-content: center;
   position: fixed;
   left: ${({ sidebar }) => (sidebar ? '0' : '100%')};
-  transition : 350ms;
+  transition: 350ms;
   z-index: 10;
+  overflow: auto;
+  flex-shrink: 0;
 `;
 
 const SidebarWrap = styled.div`
@@ -43,7 +48,18 @@ const SidebarWrap = styled.div`
 const Sidebar = () => {
   const [sidebar, SetSidebar] = useState(true);
   const showSidebar = () => SetSidebar(!sidebar);
-
+  const [sideBarData,setSideBarData] = useState(null)
+  const userRole = Cookies.get('userRole');  
+  useEffect(() => {
+    if (userRole == 1) {
+      setSideBarData(adminSidebardata);
+    } else if (userRole == 2) {
+      setSideBarData(QAManagerSidebardata);
+    } else if (userRole == 3) {
+      setSideBarData(QACoordinatorSidebardata);
+    }
+    console.log('data',sideBarData);
+  }) 
   return (
     <header>
       <div className="md:hidden">
@@ -59,7 +75,7 @@ const Sidebar = () => {
             <NavIcon to="#">
               <AiIcons.AiOutlineClose onClick={showSidebar} className="sm:hidden" />
             </NavIcon>
-            {Sidebardata.map((item, index) => {
+            {sideBarData !== null && sideBarData.map((item, index) => {
               return <Submenu item={item} key={index} />;
             })}
           </SidebarWrap>
@@ -68,6 +84,5 @@ const Sidebar = () => {
     </header>
   );
 };
-
 
 export default Sidebar;

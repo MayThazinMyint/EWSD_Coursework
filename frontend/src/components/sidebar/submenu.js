@@ -52,18 +52,19 @@ const Submenu = ({ item }) => {
   const handleLogout = (item) => {
     console.log('clicked');
     if (item.title === 'Logout') {
-        console.log('Logout clicked');
+        //console.log('Logout clicked');
         Cookies.set('isAuthenticated', false);
         Cookies.set('token', null);
         Cookies.set('userRole', null);
         Cookies.set('userId', null);
+        Cookies.set('departmentId',null);
       dispatch(logout());
       navigate('/');
     }
   };
   const [subnav, setSubnav] = useState(false);
-
   const showSubnav = () => setSubnav(!subnav);
+  
   return (
     <div onClick={() => handleLogout(item)}>
       <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
