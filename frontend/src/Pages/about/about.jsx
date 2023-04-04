@@ -11,11 +11,11 @@ import './about.css';
 
 const About = () => {
   const profileData = [
+    { id: 0, name: 'May Thazin Myint', profileImg: mtzm, role: 'Leader' },
     { id: 1, name: 'Aung Kaung Myat', profileImg: anonymous, role: 'Team Member' },
     { id: 1, name: 'Aye Myat Zabe Moe', profileImg: amzbm, role: 'Team Member' },
     { id: 2, name: 'Aye Nyein Chan Pyae', profileImg: ancp, role: 'Team Member' },
     { id: 3, name: 'Htet Aung Kyaw', profileImg: hak, role: 'Team Member' },
-    { id: 0, name: 'May Thazin Myint', profileImg: mtzm, role: 'Leader' },
     { id: 5, name: 'May Thu Kywe', profileImg: mtk, role: 'Team Member' },
     { id: 6, name: 'Thura Win', profileImg: anonymous, role: 'Team Member' },
     { id: 7, name: 'Van Za Lyan Htan', profileImg: vanzar, role: 'Team Member' },
