@@ -33,7 +33,9 @@ const UserList = () => {
     setUserId(null);
     setShowWarning(false);
     //console.log('user id', userId);
-    dispatch(fetchUsers())
+    dispatch(fetchUsers()).then((res) => {
+      setUserList(res.payload.data);
+    });
   };
 
   if (user.loading || userList === null) {
