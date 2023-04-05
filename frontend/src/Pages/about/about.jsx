@@ -21,21 +21,24 @@ const About = () => {
     { id: 7, name: 'Van Za Lyan Htan', profileImg: vanzar, role: 'Team Member' },
   ];
   return (
-    <div className="pt-[100px] flex flex-wrap gap-[2.5rem] mx-[1rem] justify-center items-center">
-      {profileData.map((data) => (
-        //console.log('data',data)
-        <div class="w-[250px]  bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-          <img class="h-[250px] rounded-t-lg" src={data.profileImg} alt="" />
-          <div class="p-5">
-            <div>
-              <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {data.name}
-              </h5>
+    <div className="flex flex-col items-center">
+      <p className="pt-[100px] text-center text-4xl font-bold shadow-sm">Meet our team</p>
+      <div className="pt-[50px]   flex flex-wrap gap-[2.5rem] mx-[1rem] justify-center items-center">
+        {profileData.map((data) => (
+          //console.log('data',data)
+          <div class="w-[250px]  bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <img class="h-[250px] rounded-t-lg" src={data.profileImg} alt="" />
+            <div class="p-5">
+              <div>
+                <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {data.name}
+                </h5>
+              </div>
+              <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{data.role}</p>
             </div>
-            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{data.role}</p>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

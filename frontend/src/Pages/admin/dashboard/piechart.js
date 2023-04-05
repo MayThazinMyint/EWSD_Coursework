@@ -47,6 +47,7 @@ const pieChartData = [
 ];
   return (
     <div className="w-[750px] h-[400px]">
+      <p className='font-bold'>Number of Category by Department</p>
       <Doughnut
         options={{
           responsive: true,
@@ -62,7 +63,7 @@ const pieChartData = [
             categoryByDept.map((data) => data && data.department_description),
           datasets: [
             {
-              label: 'Ideas percentage by each department',
+              label: 'Number of Category by Department',
               data:
                 categoryByDept !== null && categoryByDept.map((data) => data && data.category_cnt),
               backgroundColor: ['#00FFFF', '#89CFF0', '#0096FF', '#0000FF'],
